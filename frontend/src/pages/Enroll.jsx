@@ -1,10 +1,13 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 
 const API = "http://127.0.0.1:8000/api/v1";
 
 function Enroll() {
   const fileInputRef = useRef(null);
+  const videoRef = useRef(null);
+  const canvasRef = useRef(null);
+  const streamRef = useRef(null);
 
   const [name, setName] = useState("");
   const [file, setFile] = useState(null);
@@ -16,6 +19,48 @@ function Enroll() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
+  const [cameraOpen, setCameraOpen] = useState(false);
+  const [cameraLoading, setCameraLoading] = useState(false);
+
+  // ==========================================
+  // STOP CAMERA
+  // ==========================================
+
+  const stopCamera = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => {
+        track.stop();
+      });
+
+      streamRef.current = null;
+    }
+
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
+
+    setCameraOpen(false);
+    setCameraLoading(false);
+  };
+
+  // ==========================================
+  // CLEANUP CAMERA WHEN LEAVING PAGE
+  // ==========================================
+
+  useEffect(() => {
+    return () => {
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => {
+          track.stop();
+        });
+      }
+    };
+  }, []);
+
+  // ==========================================
+  // SELECT IMAGE
+  // ==========================================
+
   const selectFile = (selectedFile) => {
     setMessage("");
     setError("");
@@ -25,7 +70,7 @@ function Enroll() {
     const allowedTypes = [
       "image/jpeg",
       "image/png",
-      "image/jpg"
+      "image/jpg",
     ];
 
     if (!allowedTypes.includes(selectedFile.type)) {
@@ -38,27 +83,43 @@ function Enroll() {
       return;
     }
 
+    stopCamera();
+
     setFile(selectedFile);
 
     const imageURL = URL.createObjectURL(selectedFile);
     setPreview(imageURL);
   };
 
+  // ==========================================
+  // FILE INPUT
+  // ==========================================
+
   const handleFileChange = (event) => {
     selectFile(event.target.files[0]);
   };
+
+  // ==========================================
+  // DRAG & DROP
+  // ==========================================
 
   const handleDrop = (event) => {
     event.preventDefault();
     setDragging(false);
 
     const droppedFile = event.dataTransfer.files[0];
+
     selectFile(droppedFile);
   };
+
+  // ==========================================
+  // REMOVE IMAGE
+  // ==========================================
 
   const removeFile = () => {
     setFile(null);
     setPreview(null);
+
     setMessage("");
     setError("");
 
@@ -67,24 +128,208 @@ function Enroll() {
     }
   };
 
+  // ==========================================
+  // OPEN CAMERA
+  // ==========================================
+
+  const openCamera = async () => {
+    setError("");
+    setMessage("");
+    setCameraLoading(true);
+
+    try {
+      if (!navigator.mediaDevices?.getUserMedia) {
+        throw new Error(
+          "Camera is not supported by this browser."
+        );
+      }
+
+      const stream =
+        await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: "user",
+            width: {
+              ideal: 1280,
+            },
+            height: {
+              ideal: 720,
+            },
+          },
+          audio: false,
+        });
+
+      streamRef.current = stream;
+
+      setCameraOpen(true);
+
+      /*
+       * Wait until the video element is rendered
+       * before attaching the camera stream.
+       */
+      setTimeout(() => {
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+
+          videoRef.current
+            .play()
+            .catch((err) => {
+              console.error(
+                "Video playback error:",
+                err
+              );
+            });
+        }
+      }, 100);
+
+    } catch (err) {
+      console.error("Camera error:", err);
+
+      if (err.name === "NotAllowedError") {
+        setError(
+          "Camera permission was denied. Please allow camera access in your browser."
+        );
+      } else if (err.name === "NotFoundError") {
+        setError(
+          "No camera was found on this device."
+        );
+      } else if (err.name === "NotReadableError") {
+        setError(
+          "Camera is already being used by another application."
+        );
+      } else if (err.name === "SecurityError") {
+        setError(
+          "Camera access was blocked by browser security settings."
+        );
+      } else {
+        setError(
+          "Unable to open the camera. Please try again."
+        );
+      }
+
+      setCameraOpen(false);
+
+    } finally {
+      setCameraLoading(false);
+    }
+  };
+
+  // ==========================================
+  // CAPTURE PHOTO
+  // ==========================================
+
+  const capturePhoto = () => {
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+
+    if (!video || !canvas) {
+      setError("Camera is not ready.");
+      return;
+    }
+
+    if (
+      video.videoWidth === 0 ||
+      video.videoHeight === 0
+    ) {
+      setError(
+        "Camera is still loading. Please wait a moment."
+      );
+      return;
+    }
+
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    const context = canvas.getContext("2d");
+
+    if (!context) {
+      setError("Unable to capture photo.");
+      return;
+    }
+
+    /*
+     * Mirror the captured image because the
+     * front camera preview is mirrored.
+     */
+    context.save();
+
+    context.translate(canvas.width, 0);
+    context.scale(-1, 1);
+
+    context.drawImage(
+      video,
+      0,
+      0,
+      canvas.width,
+      canvas.height
+    );
+
+    context.restore();
+
+    canvas.toBlob(
+      (blob) => {
+        if (!blob) {
+          setError("Unable to capture photo.");
+          return;
+        }
+
+        const capturedFile = new File(
+          [blob],
+          `camera-enrollment-${Date.now()}.jpg`,
+          {
+            type: "image/jpeg",
+          }
+        );
+
+        setFile(capturedFile);
+
+        const imageURL =
+          URL.createObjectURL(capturedFile);
+
+        setPreview(imageURL);
+
+        setError("");
+        setMessage("");
+
+        stopCamera();
+      },
+      "image/jpeg",
+      0.92
+    );
+  };
+
+  // ==========================================
+  // ENROLL FACE
+  // ==========================================
+
   const handleEnroll = async () => {
     setMessage("");
     setError("");
 
     if (!name.trim()) {
-      setError("Please enter the person's name.");
+      setError(
+        "Please enter the person's name."
+      );
       return;
     }
 
     if (!file) {
-      setError("Please select a face image.");
+      setError(
+        "Please select or capture a face image."
+      );
       return;
     }
 
     const formData = new FormData();
 
-    formData.append("name", name.trim());
-    formData.append("file", file);
+    formData.append(
+      "name",
+      name.trim()
+    );
+
+    formData.append(
+      "file",
+      file
+    );
 
     try {
       setLoading(true);
@@ -100,10 +345,16 @@ function Enroll() {
         );
 
         setName("");
+
         removeFile();
       }
 
     } catch (err) {
+      console.error(
+        "Enrollment error:",
+        err
+      );
+
       const detail =
         err.response?.data?.detail ||
         "Unable to enroll the face. Please try again.";
@@ -115,44 +366,73 @@ function Enroll() {
     }
   };
 
+  // ==========================================
+  // UI
+  // ==========================================
+
   return (
     <div className="enroll-page">
 
+      {/* =====================================
+          INTRO
+      ====================================== */}
+
       <div className="enroll-intro">
+
         <div>
+
           <span className="page-kicker">
             IDENTITY MANAGEMENT
           </span>
 
-          <h2>Enroll a new face</h2>
+          <h2>
+            Enroll a new face
+          </h2>
 
           <p>
-            Add a person to the FaceVault recognition database.
-            For best results, use a clear image with one visible face.
+            Add a person to the FaceVault recognition
+            database. For best results, use a clear
+            image with one visible face.
           </p>
+
         </div>
 
         <div className="secure-badge">
           <span>●</span>
           Biometric processing
         </div>
+
       </div>
 
 
       <div className="enroll-layout">
 
-        {/* LEFT SIDE */}
+        {/* ===================================
+            LEFT SIDE
+        ==================================== */}
+
         <div className="enroll-card">
 
+          {/* PERSON INFORMATION */}
+
           <div className="card-header">
+
             <div>
-              <span className="step-label">STEP 01</span>
-              <h3>Person information</h3>
+
+              <span className="step-label">
+                STEP 01
+              </span>
+
+              <h3>
+                Person information
+              </h3>
+
             </div>
 
             <div className="step-number">
               01
             </div>
+
           </div>
 
 
@@ -174,18 +454,28 @@ function Enroll() {
 
 
           <div className="input-hint">
-            This name will be associated with the face embedding.
+            This name will be associated with the
+            face embedding.
           </div>
 
 
           <div className="card-divider"></div>
 
 
+          {/* FACE IMAGE */}
+
           <div className="card-header upload-header">
 
             <div>
-              <span className="step-label">STEP 02</span>
-              <h3>Face image</h3>
+
+              <span className="step-label">
+                STEP 02
+              </span>
+
+              <h3>
+                Face image
+              </h3>
+
             </div>
 
             <div className="file-limit">
@@ -195,48 +485,181 @@ function Enroll() {
           </div>
 
 
-          {!preview ? (
+          {/* =================================
+              CAMERA CANVAS
+          ================================== */}
 
-            <div
-              className={`upload-zone ${
-                dragging ? "dragging" : ""
-              }`}
-              onDragOver={(e) => {
-                e.preventDefault();
-                setDragging(true);
-              }}
-              onDragLeave={() => setDragging(false)}
-              onDrop={handleDrop}
-              onClick={() => fileInputRef.current?.click()}
-            >
+          <canvas
+            ref={canvasRef}
+            style={{
+              display: "none",
+            }}
+          />
 
-              <div className="upload-icon">
-                ↑
+
+          {/* =================================
+              CAMERA VIEW
+          ================================== */}
+
+          {cameraOpen ? (
+
+            <div className="camera-container">
+
+              <div className="camera-preview-wrapper">
+
+                <video
+                  ref={videoRef}
+                  className="camera-preview"
+                  autoPlay
+                  playsInline
+                  muted
+                />
+
+                {/* FACE FRAME */}
+
+                <div className="camera-frame">
+
+                  <span className="camera-corner top-left"></span>
+
+                  <span className="camera-corner top-right"></span>
+
+                  <span className="camera-corner bottom-left"></span>
+
+                  <span className="camera-corner bottom-right"></span>
+
+                </div>
+
+
+                {/* CAMERA STATUS */}
+
+                <div className="camera-status">
+
+                  <span className="camera-live-dot"></span>
+
+                  CAMERA ACTIVE
+
+                </div>
+
               </div>
 
-              <h4>
-                Drop your face image here
-              </h4>
 
-              <p>
-                or click to browse from your computer
-              </p>
+              {/* CAMERA BUTTONS */}
 
-              <div className="upload-formats">
-                JPG &nbsp;•&nbsp; PNG
+              <div className="camera-actions">
+
+                <button
+                  type="button"
+                  className="camera-capture-button"
+                  onClick={capturePhoto}
+                >
+                  ◉ Capture Photo
+                </button>
+
+
+                <button
+                  type="button"
+                  className="camera-cancel-button"
+                  onClick={stopCamera}
+                >
+                  Cancel
+                </button>
+
               </div>
-
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/jpeg,image/png"
-                hidden
-                onChange={handleFileChange}
-              />
 
             </div>
 
+          ) : !preview ? (
+
+            <>
+              {/* ===============================
+                  UPLOAD AREA
+              ================================ */}
+
+              <div
+                className={`upload-zone ${
+                  dragging
+                    ? "dragging"
+                    : ""
+                }`}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  setDragging(true);
+                }}
+                onDragLeave={() =>
+                  setDragging(false)
+                }
+                onDrop={handleDrop}
+                onClick={() =>
+                  fileInputRef.current?.click()
+                }
+              >
+
+                <div className="upload-icon">
+                  ↑
+                </div>
+
+                <h4>
+                  Drop your face image here
+                </h4>
+
+                <p>
+                  or click to browse from your computer
+                </p>
+
+                <div className="upload-formats">
+                  JPG &nbsp;•&nbsp; PNG
+                </div>
+
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/jpeg,image/png"
+                  hidden
+                  onChange={handleFileChange}
+                />
+
+              </div>
+
+
+              {/* ===============================
+                  CAMERA OPTION
+              ================================ */}
+
+              <div className="camera-option">
+
+                <div className="camera-option-line">
+                  <span></span>
+                  OR
+                  <span></span>
+                </div>
+
+
+                <button
+                  type="button"
+                  className="camera-open-button"
+                  onClick={openCamera}
+                  disabled={cameraLoading}
+                >
+
+                  <span className="camera-icon">
+                    ◉
+                  </span>
+
+                  {cameraLoading
+                    ? "Opening Camera..."
+                    : "Use Camera"}
+
+                </button>
+
+              </div>
+
+            </>
+
           ) : (
+
+            /* =================================
+               IMAGE PREVIEW
+            ================================== */
 
             <div className="preview-container">
 
@@ -249,24 +672,38 @@ function Enroll() {
                 />
 
                 <div className="preview-overlay">
-                  <span>IMAGE READY</span>
+                  <span>
+                    IMAGE READY
+                  </span>
                 </div>
 
               </div>
 
+
               <div className="preview-info">
 
                 <div>
+
                   <strong>
                     {file?.name}
                   </strong>
 
                   <span>
-                    {(file?.size / 1024 / 1024).toFixed(2)} MB
+                    {file
+                      ? (
+                          file.size /
+                          1024 /
+                          1024
+                        ).toFixed(2)
+                      : "0.00"}{" "}
+                    MB
                   </span>
+
                 </div>
 
+
                 <button
+                  type="button"
                   className="remove-button"
                   onClick={removeFile}
                 >
@@ -275,44 +712,96 @@ function Enroll() {
 
               </div>
 
+
+              {/* RETAKE CAMERA */}
+
+              <button
+                type="button"
+                className="camera-retake-button"
+                onClick={() => {
+                  removeFile();
+                  openCamera();
+                }}
+              >
+                ↻ Retake with Camera
+              </button>
+
             </div>
 
           )}
 
+
+          {/* =================================
+              ERROR
+          ================================== */}
 
           {error && (
+
             <div className="enroll-message error">
-              <span>!</span>
+
+              <span>
+                !
+              </span>
+
               {error}
+
             </div>
+
           )}
 
+
+          {/* =================================
+              SUCCESS
+          ================================== */}
 
           {message && (
+
             <div className="enroll-message success">
-              <span>✓</span>
+
+              <span>
+                ✓
+              </span>
+
               {message}
+
             </div>
+
           )}
 
 
+          {/* =================================
+              ENROLL BUTTON
+          ================================== */}
+
           <button
+            type="button"
             className="enroll-submit"
             onClick={handleEnroll}
-            disabled={loading}
+            disabled={loading || cameraOpen}
           >
 
             {loading ? (
+
               <>
                 <span className="spinner"></span>
+
                 Processing face...
               </>
+
             ) : (
+
               <>
-                <span>✦</span>
+                <span>
+                  ✦
+                </span>
+
                 Enroll Face
-                <b>→</b>
+
+                <b>
+                  →
+                </b>
               </>
+
             )}
 
           </button>
@@ -320,8 +809,13 @@ function Enroll() {
         </div>
 
 
-        {/* RIGHT SIDE */}
+        {/* ===================================
+            RIGHT SIDE
+        ==================================== */}
+
         <div className="enroll-info-column">
+
+          {/* QUALITY CARD */}
 
           <div className="info-card quality-card">
 
@@ -340,40 +834,75 @@ function Enroll() {
             </h3>
 
             <p>
-              FaceVault checks the image before creating
-              the biometric representation.
+              FaceVault checks the image before
+              creating the biometric representation.
             </p>
+
 
             <div className="quality-list">
 
               <div>
-                <span>✓</span>
+
+                <span>
+                  ✓
+                </span>
+
                 <p>
-                  <strong>One face</strong>
+
+                  <strong>
+                    One face
+                  </strong>
+
                   Only one person should be visible.
+
                 </p>
+
               </div>
 
+
               <div>
-                <span>✓</span>
+
+                <span>
+                  ✓
+                </span>
+
                 <p>
-                  <strong>Clear image</strong>
+
+                  <strong>
+                    Clear image
+                  </strong>
+
                   Avoid blurry or low-quality photos.
+
                 </p>
+
               </div>
 
+
               <div>
-                <span>✓</span>
+
+                <span>
+                  ✓
+                </span>
+
                 <p>
-                  <strong>Good lighting</strong>
+
+                  <strong>
+                    Good lighting
+                  </strong>
+
                   Keep the face clearly visible.
+
                 </p>
+
               </div>
 
             </div>
 
           </div>
 
+
+          {/* PIPELINE */}
 
           <div className="pipeline-mini">
 
@@ -384,35 +913,63 @@ function Enroll() {
             <div className="mini-pipeline">
 
               <div className="mini-step">
-                <span>01</span>
+
+                <span>
+                  01
+                </span>
+
                 Detect
+
               </div>
+
 
               <div className="mini-line"></div>
 
+
               <div className="mini-step">
-                <span>02</span>
+
+                <span>
+                  02
+                </span>
+
                 Quality
+
               </div>
+
 
               <div className="mini-line"></div>
 
+
               <div className="mini-step">
-                <span>03</span>
+
+                <span>
+                  03
+                </span>
+
                 Embed
+
               </div>
+
 
               <div className="mini-line"></div>
 
+
               <div className="mini-step">
-                <span>04</span>
+
+                <span>
+                  04
+                </span>
+
                 Store
+
               </div>
 
             </div>
 
           </div>
 
+
+          {/* PRIVACY */}
 
           <div className="privacy-card">
 
@@ -421,14 +978,17 @@ function Enroll() {
             </span>
 
             <div>
+
               <strong>
                 Privacy-aware storage
               </strong>
 
               <p>
-                FaceVault stores the generated embedding
-                rather than keeping the uploaded image.
+                FaceVault stores the generated
+                embedding rather than keeping the
+                uploaded image.
               </p>
+
             </div>
 
           </div>
