@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 
+from datetime import datetime
 from sqlalchemy.orm import Session
 
 from app.ai.detector import FaceDetector
@@ -25,7 +26,6 @@ class RecognitionService:
             threshold=0.45
         )
 
-
     def recognize(
         self,
         db: Session,
@@ -43,7 +43,6 @@ class RecognitionService:
                 "Unable to read image."
             )
 
-
         # =================================================
         # FACE DETECTION
         # =================================================
@@ -54,7 +53,6 @@ class RecognitionService:
             raise ValueError(
                 "No face detected."
             )
-
 
         # =================================================
         # LOAD ENROLLED PEOPLE
@@ -78,13 +76,11 @@ class RecognitionService:
                 person.name
             ] = embedding
 
-
         # =================================================
         # RECOGNIZE EVERY DETECTED FACE
         # =================================================
 
         results = []
-
 
         for face in faces:
 
@@ -95,42 +91,30 @@ class RecognitionService:
                 )
             )
 
-
             result = self.matcher.identify(
                 embedding,
                 enrolled_embeddings
             )
 
-
             # =============================================
-            # SAVE HISTORY
+            # SAVE RECOGNITION HISTORY
             # =============================================
 
             history_record = RecognitionHistory(
-
                 identity=result["identity"],
-
-                score=float(
-                    result["score"]
-                ),
-
-                status=result["status"]
-
+                score=float(result["score"]),
+                status=result["status"],
+                created_at=datetime.now()
             )
 
             db.add(history_record)
 
-
-            # Add result to response
-
             results.append(result)
 
-
         # =================================================
-        # COMMIT HISTORY
+        # SAVE HISTORY
         # =================================================
 
         db.commit()
-
 
         return results

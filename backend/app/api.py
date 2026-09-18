@@ -11,15 +11,21 @@ from sqlalchemy.orm import Session
 
 import tempfile
 import os
+import traceback
 
 from app.database.connection import SessionLocal
-from app.database.models import Person, RecognitionHistory
+from app.database.models import (
+    Person,
+    RecognitionHistory
+)
 
 from app.services.enrollment import EnrollmentService
 from app.services.recognition import RecognitionService
 
 
-router = APIRouter(prefix="/api/v1")
+router = APIRouter(
+    prefix="/api/v1"
+)
 
 
 # =========================================================
@@ -27,6 +33,7 @@ router = APIRouter(prefix="/api/v1")
 # =========================================================
 
 def get_db():
+
     db = SessionLocal()
 
     try:
@@ -131,6 +138,7 @@ async def enroll(
 ):
 
     if not name.strip():
+
         raise HTTPException(
             status_code=400,
             detail="Person name is required."
@@ -145,7 +153,10 @@ async def enroll(
         suffix=suffix
     ) as temp:
 
-        temp.write(await file.read())
+        temp.write(
+            await file.read()
+        )
+
         temp_path = temp.name
 
     try:
@@ -174,7 +185,11 @@ async def enroll(
 
     except Exception as e:
 
-        print("Enrollment error:", e)
+        print("================================")
+        print("ENROLLMENT BACKEND ERROR")
+        print("================================")
+        traceback.print_exc()
+        print("================================")
 
         raise HTTPException(
             status_code=500,
@@ -206,7 +221,10 @@ async def recognize(
         suffix=suffix
     ) as temp:
 
-        temp.write(await file.read())
+        temp.write(
+            await file.read()
+        )
+
         temp_path = temp.name
 
     try:
@@ -232,7 +250,11 @@ async def recognize(
 
     except Exception as e:
 
-        print("Recognition error:", e)
+        print("================================")
+        print("RECOGNITION BACKEND ERROR")
+        print("================================")
+        traceback.print_exc()
+        print("================================")
 
         raise HTTPException(
             status_code=500,
