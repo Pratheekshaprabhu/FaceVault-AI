@@ -5988,3 +5988,146 @@ a {
     grid-template-columns: 1fr;
   }
 }
+
+/* =========================================================
+   FINAL FULL-COVER WEBSITE ALIGNMENT
+   ========================================================= */
+
+html,
+body,
+#root {
+  width: 100%;
+  min-width: 320px;
+}
+
+.app-shell {
+  width: 100%;
+  min-height: 100vh;
+}
+
+@media (min-width: 851px) {
+
+  .main-content {
+    width: calc(100% - 280px) !important;
+    margin-left: 280px !important;
+    max-width: none !important;
+    padding: 0 !important;
+  }
+
+  .top-header {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    padding-left: 32px !important;
+    padding-right: 32px !important;
+  }
+
+  .page {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 26px 32px 50px !important;
+    box-sizing: border-box !important;
+  }
+
+  .hero {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+
+    min-height: 350px !important;
+    height: 350px !important;
+
+    display: grid !important;
+    grid-template-columns: minmax(0, 1.15fr) minmax(300px, 0.85fr) !important;
+    gap: 20px !important;
+  }
+
+  .hero-content {
+    width: 100% !important;
+    max-width: 620px !important;
+    padding: 35px 0 35px 40px !important;
+    box-sizing: border-box !important;
+  }
+
+  .hero h2 {
+    max-width: 570px !important;
+    font-size: 46px !important;
+  }
+
+  .hero-content > p {
+    max-width: 540px !important;
+    font-size: 14px !important;
+  }
+
+  .ai-visual {
+    position: relative !important;
+    inset: auto !important;
+    transform: none !important;
+
+    width: 100% !important;
+    height: 300px !important;
+    max-width: none !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .stats-grid,
+  .pipeline,
+  .activity-card {
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  .stats-grid {
+    gap: 14px !important;
+  }
+
+  .stat-card {
+    min-height: 112px !important;
+  }
+
+  .pipeline {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 14px !important;
+  }
+
+  .pipeline-card {
+    min-height: 145px !important;
+  }
+
+  .section {
+    width: 100% !important;
+    max-width: none !important;
+    margin-top: 32px !important;
+  }
+}
+
+@media (min-width: 1400px) {
+
+  .page {
+    padding-left: 36px !important;
+    padding-right: 36px !important;
+  }
+
+  .hero {
+    height: 365px !important;
+    min-height: 365px !important;
+    grid-template-columns: minmax(0, 1.18fr) minmax(340px, 0.82fr) !important;
+  }
+
+  .hero-content {
+    padding-left: 45px !important;
+  }
+
+  .hero h2 {
+    font-size: 50px !important;
+  }
+
+  .ai-visual {
+    height: 315px !important;
+  }
+}
