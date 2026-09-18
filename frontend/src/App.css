@@ -5648,3 +5648,174 @@ a {
     grid-column: 1 / -1;
   }
 }
+/* =========================================================
+   FINAL DESKTOP DASHBOARD ALIGNMENT
+   ========================================================= */
+
+@media (min-width: 1200px) {
+
+  .main-content {
+    width: calc(100% - 280px);
+    margin-left: 280px;
+    min-width: 0;
+  }
+
+  .top-header {
+    width: 100%;
+    padding: 30px 52px;
+  }
+
+  .page {
+    width: 100%;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 38px 52px 70px !important;
+  }
+
+  /* Make hero use the full workspace */
+  .hero {
+    width: 100% !important;
+    min-height: 500px;
+    margin: 0 !important;
+    padding: 55px 65px !important;
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(380px, 0.85fr);
+    gap: 45px;
+    align-items: center;
+  }
+
+  .hero-content {
+    width: 100%;
+    max-width: 760px;
+  }
+
+  .hero-content h2 {
+    font-size: clamp(46px, 4vw, 64px) !important;
+    line-height: 1.05;
+    margin: 22px 0 24px;
+  }
+
+  .hero-content p {
+    max-width: 700px;
+    font-size: 18px;
+    line-height: 1.7;
+  }
+
+  .hero-buttons {
+    margin-top: 30px;
+  }
+
+  .hero-meta {
+    margin-top: 40px;
+  }
+
+  .ai-visual {
+    min-height: 390px;
+    width: 100%;
+  }
+
+  /* Statistics */
+  .stats-grid {
+    width: 100%;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 22px;
+  }
+
+  .stat-card {
+    min-height: 155px;
+    padding: 28px;
+  }
+
+  /* Pipeline */
+  .pipeline {
+    width: 100%;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+  }
+
+  .pipeline-card {
+    min-height: 190px;
+    padding: 28px;
+  }
+
+  .pipeline-arrow {
+    display: none;
+  }
+
+  /* Activity */
+  .activity-card {
+    width: 100%;
+  }
+
+  /* Section spacing */
+  .section {
+    width: 100%;
+    margin-top: 55px;
+  }
+
+  .section-heading {
+    margin-bottom: 22px;
+  }
+}
+
+
+/* =========================================================
+   LARGE SCREENS
+   ========================================================= */
+
+@media (min-width: 1600px) {
+
+  .top-header {
+    padding-left: 65px;
+    padding-right: 65px;
+  }
+
+  .page {
+    padding-left: 65px !important;
+    padding-right: 65px !important;
+  }
+
+  .hero {
+    min-height: 540px;
+    padding: 65px 75px !important;
+    grid-template-columns: 1.2fr 0.8fr;
+  }
+
+  .hero-content h2 {
+    font-size: 68px !important;
+  }
+
+  .hero-content p {
+    font-size: 19px;
+    max-width: 760px;
+  }
+
+  .ai-visual {
+    min-height: 430px;
+  }
+}
+
+
+/* =========================================================
+   LAPTOP
+   ========================================================= */
+
+@media (min-width: 769px) and (max-width: 1199px) {
+
+  .main-content {
+    width: calc(100% - 240px);
+    margin-left: 240px;
+  }
+
+  .page {
+    padding: 30px !important;
+  }
+
+  .hero {
+    padding: 40px !important;
+  }
+
+  .hero-content h2 {
+    font-size: 42px !important;
+  }
+}
