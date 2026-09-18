@@ -58,7 +58,7 @@ a {
   top: 0;
   bottom: 0;
 
-  width: 290px;
+  width: 280px;
 
   display: flex;
   flex-direction: column;
@@ -202,7 +202,7 @@ a {
   align-items: center;
   justify-content: center;
 
-  font-size: 18px;
+  font-size: 16px;
 }
 
 .nav-arrow {
@@ -237,7 +237,7 @@ a {
 
   color: #e7eaf2;
 
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
 }
 
@@ -299,8 +299,8 @@ a {
 ============================== */
 
 .main-content {
-  width: calc(100% - 290px);
-  margin-left: 290px;
+  width: calc(100% - 280px);
+  margin-left: 280px;
 
   min-height: 100vh;
 }
@@ -311,7 +311,7 @@ a {
 ============================== */
 
 .top-header {
-  height: 108px;
+  height: 100px;
 
   display: flex;
   align-items: center;
@@ -332,7 +332,7 @@ a {
 
 .breadcrumb {
   color: #586277;
-  font-size: 13px;
+  font-size: 11px;
   margin-bottom: 6px;
 }
 
@@ -343,7 +343,7 @@ a {
 
 .top-header h1 {
   font-family: "Space Grotesk";
-  font-size: 28px;
+  font-size: 25px;
   color: #f4f5f8;
 }
 
@@ -359,7 +359,7 @@ a {
   gap: 7px;
 
   color: #8d98ab;
-  font-size: 13px;
+  font-size: 11px;
 }
 
 .api-status span {
@@ -439,7 +439,7 @@ a {
 ============================== */
 
 .hero {
-  min-height: 600px;
+  min-height: 520px;
 
   display: flex;
 
@@ -509,7 +509,7 @@ a {
 
   padding: 62px 65px;
 
-  max-width: 820px;
+  max-width: 760px;
 }
 
 .hero-badge {
@@ -551,7 +551,7 @@ a {
 
   color: #f8fafc;
 
-  font-size: clamp(48px, 4vw, 68px);
+  font-size: clamp(42px, 4vw, 60px);
 
   line-height: 1.04;
 
@@ -579,7 +579,7 @@ a {
 
   color: #8791a5;
 
-  font-size: 19px;
+  font-size: 17px;
 
   line-height: 1.75;
 }
@@ -630,7 +630,7 @@ a {
 }
 
 .primary-button b {
-  font-size: 19px;
+  font-size: 17px;
   font-weight: 400;
 }
 
@@ -703,7 +703,7 @@ a {
   top: 50%;
 
   width: 420px;
-  height: 470px;
+  height: 420px;
 
   transform: translateY(-50%);
 
@@ -913,7 +913,7 @@ a {
 ============================== */
 
 .section {
-  margin-top: 52px;
+  margin-top: 42px;
 }
 
 .section-heading {
@@ -940,7 +940,7 @@ a {
 
   font-family: "Space Grotesk";
 
-  font-size: 23px;
+  font-size: 20px;
 }
 
 
@@ -953,18 +953,18 @@ a {
 
   grid-template-columns: repeat(4, minmax(0, 1fr));
 
-  gap: 22px;
+  gap: 18px;
 }
 
 .stat-card {
-  min-height: 175px;
+  min-height: 150px;
 
   display: flex;
   align-items: center;
 
   gap: 15px;
 
-  padding: 30px;
+  padding: 24px;
 
   background:
     linear-gradient(
@@ -992,8 +992,8 @@ a {
 .stat-icon {
   flex-shrink: 0;
 
-  width: 58px;
-  height: 58px;
+  width: 50px;
+  height: 50px;
 
   display: flex;
   align-items: center;
@@ -1030,7 +1030,7 @@ a {
 
   font-family: "Space Grotesk";
 
-  font-size: 36px;
+  font-size: 30px;
 }
 
 .stat-content small {
@@ -1070,13 +1070,13 @@ a {
 .pipeline {
   display: flex;
   align-items: stretch;
-  gap: 20px;
+  gap: 16px;
 }
 
 .pipeline-card {
   flex: 1;
 
-  padding: 32px;
+  padding: 27px;
 
   border-radius: 15px;
 
@@ -1159,9 +1159,9 @@ a {
 }
 
 .activity-row {
-  min-height: 82px;
+  min-height: 70px;
 
-  padding: 16px 22px;
+  padding: 13px 18px;
 
   display: flex;
   align-items: center;
@@ -1176,8 +1176,8 @@ a {
 }
 
 .activity-icon {
-  width: 42px;
-  height: 42px;
+  width: 35px;
+  height: 35px;
 
   border-radius: 10px;
 
@@ -1446,7 +1446,7 @@ a {
   }
 
   .hero {
-    min-height: 570px;
+    min-height: 500px;
   }
 
   .ai-visual {
@@ -5650,198 +5650,84 @@ a {
 }
 
 /* =========================================================
-   STANDARD RESPONSIVE DASHBOARD LAYOUT
+   STANDARD MEDIUM FULL-WIDTH WEBSITE LAYOUT
    ========================================================= */
 
-/* Desktop */
+/* Desktop: balanced sizing, full workspace coverage */
 @media (min-width: 1201px) {
   .main-content {
-    width: calc(100% - 290px);
-    margin-left: 290px;
+    width: calc(100% - 280px);
+    margin-left: 280px;
     min-width: 0;
   }
 
   .top-header {
     width: 100%;
-    padding: 0 56px;
+    height: 92px;
+    padding: 0 38px;
   }
 
   .page {
     width: 100%;
-    max-width: 1600px;
+    max-width: 1500px;
     margin: 0 auto;
-    padding: 44px 56px 80px;
+    padding: 30px 38px 55px;
   }
 
-  /* Hero: two clean columns */
+  /* Balanced hero */
   .hero {
     width: 100%;
-    min-height: 500px;
+    min-height: 410px;
     display: grid;
-    grid-template-columns: minmax(0, 1.35fr) minmax(360px, 0.85fr);
+    grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
     align-items: center;
-    gap: 55px;
+    gap: 18px;
     padding: 0;
+    box-sizing: border-box;
   }
 
   .hero-content {
     position: relative;
     z-index: 2;
     width: auto;
-    max-width: 760px;
+    max-width: 650px;
     min-width: 0;
-    padding: 68px 0 68px 70px;
+    padding: 45px 0 45px 45px;
   }
 
   .hero h2 {
-    max-width: 700px;
-    font-size: clamp(42px, 4vw, 60px);
-    line-height: 1.06;
-    letter-spacing: -2px;
+    max-width: 610px;
+    margin-top: 20px;
+    font-size: clamp(38px, 3.4vw, 52px);
+    line-height: 1.08;
+    letter-spacing: -1.5px;
   }
 
   .hero-content > p {
-    max-width: 700px;
-    font-size: 16px;
-    line-height: 1.7;
+    max-width: 540px;
+    margin-top: 17px;
+    font-size: 15px;
+    line-height: 1.65;
   }
 
   .hero-buttons {
     display: flex;
     flex-wrap: wrap;
-    gap: 11px;
+    gap: 10px;
+    margin-top: 25px;
   }
 
   .hero-meta {
     display: flex;
-    gap: 28px;
+    gap: 24px;
+    margin-top: 28px;
   }
 
-  /* AI visual stays entirely in the right column */
-  .ai-visual {
-    position: relative;
-    top: auto;
-    right: auto;
-    transform: none;
-    width: 100%;
-    height: 420px;
-    min-height: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: visible;
+  .hero-meta strong {
+    font-size: 13px;
   }
 
-  .orbital-one {
-    width: 440px;
-    height: 440px;
-  }
-
-  .orbital-two {
-    width: 365px;
-    height: 365px;
-  }
-
-  .orbital-three {
-    width: 300px;
-    height: 300px;
-  }
-
-  .face-frame {
-    width: 250px;
-    height: 310px;
-  }
-
-  /* Statistics */
-  .stats-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 18px;
-  }
-
-  /* Pipeline */
-  .pipeline {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 16px;
-  }
-
-  .pipeline-arrow {
-    display: none;
-  }
-
-  .pipeline-card {
-    min-width: 0;
-  }
-}
-
-
-/* Large desktop */
-@media (min-width: 1500px) {
-  .page {
-    max-width: 1700px;
-    padding-left: 64px;
-    padding-right: 64px;
-  }
-
-  .hero {
-    min-height: 520px;
-    grid-template-columns: minmax(0, 1.3fr) minmax(400px, 0.7fr);
-    gap: 40px;
-  }
-
-  .hero-content {
-    padding-left: 64px;
-  }
-
-  .hero h2 {
-    font-size: 62px;
-  }
-
-  .hero-content > p {
-    font-size: 17px;
-    max-width: 650px;
-  }
-
-  .ai-visual {
-    height: 440px;
-  }
-}
-
-
-/* Laptop */
-@media (min-width: 769px) and (max-width: 1200px) {
-  .main-content {
-    width: calc(100% - 240px);
-    margin-left: 240px;
-  }
-
-  .top-header {
-    padding: 0 30px;
-  }
-
-  .page {
-    padding: 30px;
-  }
-
-  .hero {
-    min-height: 480px;
-    grid-template-columns: minmax(0, 1.15fr) minmax(300px, 0.85fr);
-    gap: 15px;
-  }
-
-  .hero-content {
-    padding: 45px 0 45px 35px;
-  }
-
-  .hero h2 {
-    font-size: 44px;
-  }
-
-  .hero-content > p {
-    max-width: 500px;
-    font-size: 15px;
-  }
-
+  /* Right-side AI visual */
   .ai-visual {
     position: relative;
     top: auto;
@@ -5849,16 +5735,20 @@ a {
     transform: none;
     width: 100%;
     height: 350px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
   }
 
   .orbital-one {
-    width: 320px;
-    height: 320px;
+    width: 330px;
+    height: 330px;
   }
 
   .orbital-two {
-    width: 270px;
-    height: 270px;
+    width: 275px;
+    height: 275px;
   }
 
   .orbital-three {
@@ -5871,6 +5761,147 @@ a {
     height: 240px;
   }
 
+  /* Full-width statistics */
+  .stats-grid {
+    width: 100%;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .stat-card {
+    min-height: 125px;
+    padding: 20px;
+  }
+
+  .stat-icon {
+    width: 44px;
+    height: 44px;
+    font-size: 18px;
+  }
+
+  .stat-content strong {
+    font-size: 27px;
+  }
+
+  /* Full-width pipeline */
+  .pipeline {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .pipeline-card {
+    min-width: 0;
+    min-height: 165px;
+    padding: 22px;
+  }
+
+  .pipeline-arrow {
+    display: none;
+  }
+
+  .activity-card {
+    width: 100%;
+  }
+
+  .section {
+    width: 100%;
+    margin-top: 36px;
+  }
+}
+
+
+/* Wider monitors: increase coverage slightly, not element size */
+@media (min-width: 1500px) {
+  .page {
+    max-width: 1600px;
+    padding-left: 44px;
+    padding-right: 44px;
+  }
+
+  .hero {
+    min-height: 430px;
+    grid-template-columns: minmax(0, 1.2fr) minmax(350px, 0.8fr);
+  }
+
+  .hero-content {
+    padding-left: 50px;
+  }
+
+  .hero h2 {
+    font-size: 54px;
+  }
+
+  .ai-visual {
+    height: 370px;
+  }
+}
+
+
+/* Laptop */
+@media (min-width: 769px) and (max-width: 1200px) {
+  .main-content {
+    width: calc(100% - 240px);
+    margin-left: 240px;
+  }
+
+  .top-header {
+    padding: 0 28px;
+  }
+
+  .page {
+    padding: 26px 28px 45px;
+  }
+
+  .hero {
+    min-height: 400px;
+    grid-template-columns: minmax(0, 1.1fr) minmax(290px, 0.9fr);
+    gap: 8px;
+  }
+
+  .hero-content {
+    padding: 38px 0 38px 32px;
+  }
+
+  .hero h2 {
+    font-size: 40px;
+  }
+
+  .hero-content > p {
+    max-width: 470px;
+    font-size: 14px;
+  }
+
+  .ai-visual {
+    position: relative;
+    top: auto;
+    right: auto;
+    transform: none;
+    width: 100%;
+    height: 320px;
+  }
+
+  .orbital-one {
+    width: 295px;
+    height: 295px;
+  }
+
+  .orbital-two {
+    width: 245px;
+    height: 245px;
+  }
+
+  .orbital-three {
+    width: 200px;
+    height: 200px;
+  }
+
+  .face-frame {
+    width: 175px;
+    height: 220px;
+  }
+
   .stats-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -5886,7 +5917,7 @@ a {
 }
 
 
-/* Tablet / compact layout */
+/* Tablet */
 @media (max-width: 768px) {
   .ai-visual {
     position: absolute;
@@ -5902,19 +5933,19 @@ a {
 /* Mobile */
 @media (max-width: 600px) {
   .hero {
-    min-height: 600px;
+    min-height: 520px;
     display: flex;
     flex-direction: column;
     align-items: stretch;
   }
 
   .hero-content {
-    padding: 32px 25px;
+    padding: 30px 24px;
   }
 
   .hero h2 {
-    font-size: 37px;
-    letter-spacing: -1.2px;
+    font-size: 35px;
+    letter-spacing: -1px;
   }
 
   .hero-content > p {
@@ -5928,7 +5959,7 @@ a {
   }
 
   .hero-meta {
-    gap: 15px;
+    gap: 14px;
     flex-wrap: wrap;
   }
 
@@ -5942,195 +5973,5 @@ a {
 
   .pipeline {
     grid-template-columns: 1fr;
-  }
-}
-
-/* =========================================================
-   FINAL MEDIUM/LARGE DESKTOP PRESENTATION
-   ========================================================= */
-
-@media (min-width: 1201px) {
-  .page {
-    max-width: 1800px;
-    padding: 42px 56px 80px !important;
-  }
-
-  .hero {
-    min-height: 570px !important;
-    grid-template-columns: minmax(0, 1.35fr) minmax(430px, 0.85fr) !important;
-    gap: 48px !important;
-  }
-
-  .hero-content {
-    max-width: 820px !important;
-    padding: 70px 0 70px 68px !important;
-  }
-
-  .hero h2 {
-    font-size: clamp(50px, 4vw, 68px) !important;
-    line-height: 1.06 !important;
-  }
-
-  .hero-content > p {
-    max-width: 700px !important;
-    font-size: 18px !important;
-    line-height: 1.72 !important;
-  }
-
-  .hero-buttons {
-    margin-top: 34px !important;
-    gap: 14px !important;
-  }
-
-  .primary-button,
-  .outline-button {
-    padding: 16px 23px !important;
-    font-size: 14px !important;
-  }
-
-  .hero-meta {
-    margin-top: 42px !important;
-    gap: 34px !important;
-  }
-
-  .hero-meta strong {
-    font-size: 16px !important;
-  }
-
-  .hero-meta span {
-    font-size: 10px !important;
-  }
-
-  .ai-visual {
-    height: 470px !important;
-  }
-
-  .face-frame {
-    width: 250px !important;
-    height: 310px !important;
-  }
-
-  .stats-grid {
-    gap: 22px !important;
-  }
-
-  .stat-card {
-    min-height: 175px !important;
-    padding: 30px !important;
-    gap: 18px !important;
-  }
-
-  .stat-icon {
-    width: 58px !important;
-    height: 58px !important;
-    font-size: 23px !important;
-  }
-
-  .stat-content span {
-    font-size: 11px !important;
-  }
-
-  .stat-content strong {
-    font-size: 36px !important;
-  }
-
-  .stat-content small {
-    font-size: 10px !important;
-  }
-
-  .section-heading h2 {
-    font-size: 24px !important;
-  }
-
-  .section-heading > div > span {
-    font-size: 10px !important;
-  }
-
-  .pipeline {
-    gap: 20px !important;
-  }
-
-  .pipeline-card {
-    padding: 32px !important;
-    min-height: 205px !important;
-  }
-
-  .pipeline-card h3 {
-    font-size: 20px !important;
-  }
-
-  .pipeline-card > span {
-    font-size: 10px !important;
-  }
-
-  .pipeline-card p {
-    font-size: 13px !important;
-    line-height: 1.7 !important;
-  }
-
-  .activity-row {
-    min-height: 82px !important;
-    padding: 16px 22px !important;
-  }
-
-  .activity-name strong {
-    font-size: 13px !important;
-  }
-
-  .activity-name span {
-    font-size: 10px !important;
-  }
-
-  .activity-score span {
-    font-size: 9px !important;
-  }
-
-  .activity-score strong {
-    font-size: 13px !important;
-  }
-
-  .status {
-    min-width: 82px !important;
-    padding: 8px 10px !important;
-    font-size: 9px !important;
-  }
-}
-
-
-/* =========================================================
-   VERY LARGE MONITORS
-   ========================================================= */
-
-@media (min-width: 1600px) {
-  .page {
-    max-width: 1900px;
-    padding-left: 68px !important;
-    padding-right: 68px !important;
-  }
-
-  .hero {
-    min-height: 610px !important;
-    grid-template-columns: minmax(0, 1.3fr) minmax(470px, 0.7fr) !important;
-  }
-
-  .hero-content {
-    padding-left: 78px !important;
-  }
-
-  .hero h2 {
-    font-size: 72px !important;
-  }
-
-  .hero-content > p {
-    font-size: 19px !important;
-  }
-
-  .ai-visual {
-    height: 500px !important;
-  }
-
-  .face-frame {
-    width: 270px !important;
-    height: 335px !important;
   }
 }
