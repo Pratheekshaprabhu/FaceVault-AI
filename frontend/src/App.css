@@ -58,7 +58,7 @@ a {
   top: 0;
   bottom: 0;
 
-  width: 265px;
+  width: 280px;
 
   display: flex;
   flex-direction: column;
@@ -290,7 +290,7 @@ a {
 
   color: #394254;
 
-  font-size: 8px;
+  font-size: 10px;
 }
 
 
@@ -299,8 +299,8 @@ a {
 ============================== */
 
 .main-content {
-  width: calc(100% - 265px);
-  margin-left: 265px;
+  width: calc(100% - 280px);
+  margin-left: 280px;
 
   min-height: 100vh;
 }
@@ -311,13 +311,13 @@ a {
 ============================== */
 
 .top-header {
-  height: 94px;
+  height: 100px;
 
   display: flex;
   align-items: center;
   justify-content: space-between;
 
-  padding: 0 45px;
+  padding: 0 52px;
 
   background: rgba(7,10,18,0.75);
 
@@ -332,7 +332,7 @@ a {
 
 .breadcrumb {
   color: #586277;
-  font-size: 10px;
+  font-size: 11px;
   margin-bottom: 6px;
 }
 
@@ -343,7 +343,7 @@ a {
 
 .top-header h1 {
   font-family: "Space Grotesk";
-  font-size: 23px;
+  font-size: 25px;
   color: #f4f5f8;
 }
 
@@ -359,7 +359,7 @@ a {
   gap: 7px;
 
   color: #8d98ab;
-  font-size: 10px;
+  font-size: 11px;
 }
 
 .api-status span {
@@ -427,9 +427,10 @@ a {
 ============================== */
 
 .page {
-  max-width: 1500px;
-  margin: auto;
-  padding: 34px 45px 60px;
+  width: 100%;
+  max-width: none;
+  margin: 0 auto;
+  padding: 40px 52px 70px;
 }
 
 
@@ -438,7 +439,7 @@ a {
 ============================== */
 
 .hero {
-  min-height: 420px;
+  min-height: 520px;
 
   display: flex;
 
@@ -506,9 +507,9 @@ a {
   position: relative;
   z-index: 2;
 
-  padding: 52px 55px;
+  padding: 62px 65px;
 
-  max-width: 720px;
+  max-width: 760px;
 }
 
 .hero-badge {
@@ -550,7 +551,7 @@ a {
 
   color: #f8fafc;
 
-  font-size: clamp(36px, 4vw, 53px);
+  font-size: clamp(42px, 4vw, 60px);
 
   line-height: 1.04;
 
@@ -578,9 +579,9 @@ a {
 
   color: #8791a5;
 
-  font-size: 13px;
+  font-size: 17px;
 
-  line-height: 1.8;
+  line-height: 1.75;
 }
 
 .hero-buttons {
@@ -597,7 +598,7 @@ a {
 
   border: 0;
 
-  padding: 13px 17px;
+  padding: 15px 20px;
 
   border-radius: 10px;
 
@@ -610,7 +611,7 @@ a {
 
   color: white;
 
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
 
   cursor: pointer;
@@ -629,7 +630,7 @@ a {
 }
 
 .primary-button b {
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 400;
 }
 
@@ -640,7 +641,7 @@ a {
 
   color: #c8ceda;
 
-  padding: 13px 17px;
+  padding: 15px 20px;
 
   border-radius: 10px;
 
@@ -677,7 +678,7 @@ a {
 
   font-family: "Space Grotesk";
 
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .hero-meta span {
@@ -701,8 +702,8 @@ a {
   right: 65px;
   top: 50%;
 
-  width: 360px;
-  height: 360px;
+  width: 420px;
+  height: 420px;
 
   transform: translateY(-50%);
 
@@ -722,28 +723,28 @@ a {
 }
 
 .orbital-one {
-  width: 350px;
-  height: 350px;
+  width: 410px;
+  height: 410px;
 }
 
 .orbital-two {
-  width: 290px;
-  height: 290px;
+  width: 340px;
+  height: 340px;
 
   animation-direction: reverse;
   animation-duration: 13s;
 }
 
 .orbital-three {
-  width: 230px;
-  height: 230px;
+  width: 275px;
+  height: 275px;
 
   animation-duration: 9s;
 }
 
 .face-frame {
-  width: 190px;
-  height: 240px;
+  width: 220px;
+  height: 275px;
 
   position: relative;
 
@@ -950,21 +951,20 @@ a {
 .stats-grid {
   display: grid;
 
-  grid-template-columns:
-    repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 
-  gap: 13px;
+  gap: 18px;
 }
 
 .stat-card {
-  min-height: 125px;
+  min-height: 150px;
 
   display: flex;
   align-items: center;
 
   gap: 15px;
 
-  padding: 19px;
+  padding: 24px;
 
   background:
     linear-gradient(
@@ -992,8 +992,8 @@ a {
 .stat-icon {
   flex-shrink: 0;
 
-  width: 44px;
-  height: 44px;
+  width: 50px;
+  height: 50px;
 
   display: flex;
   align-items: center;
@@ -1008,7 +1008,7 @@ a {
 
   border: 1px solid rgba(139,92,246,0.11);
 
-  font-size: 18px;
+  font-size: 20px;
 }
 
 .stat-content span {
@@ -1030,7 +1030,7 @@ a {
 
   font-family: "Space Grotesk";
 
-  font-size: 27px;
+  font-size: 30px;
 }
 
 .stat-content small {
@@ -1070,13 +1070,13 @@ a {
 .pipeline {
   display: flex;
   align-items: stretch;
-  gap: 10px;
+  gap: 16px;
 }
 
 .pipeline-card {
   flex: 1;
 
-  padding: 21px;
+  padding: 27px;
 
   border-radius: 15px;
 
@@ -1105,7 +1105,7 @@ a {
 
   font-family: "Space Grotesk";
 
-  font-size: 15px;
+  font-size: 17px;
 }
 
 .pipeline-card > span {
@@ -1124,9 +1124,9 @@ a {
 
   color: #596477;
 
-  font-size: 9px;
+  font-size: 11px;
 
-  line-height: 1.7;
+  line-height: 1.65;
 }
 
 .pipeline-arrow {
@@ -1201,7 +1201,7 @@ a {
 
   color: #dfe3eb;
 
-  font-size: 10px;
+  font-size: 11px;
 }
 
 .activity-name span {
@@ -1233,7 +1233,7 @@ a {
 
   color: #aeb6c5;
 
-  font-size: 10px;
+  font-size: 11px;
 }
 
 .status {
@@ -1335,7 +1335,7 @@ a {
 
   border: 1px solid rgba(139,92,246,0.12);
 
-  font-size: 27px;
+  font-size: 30px;
 }
 
 .coming-page > span {
@@ -1367,7 +1367,7 @@ a {
 
   color: #5e697c;
 
-  font-size: 10px;
+  font-size: 11px;
 
   line-height: 1.7;
 }
@@ -1380,12 +1380,12 @@ a {
 @media (max-width: 1200px) {
 
   .ai-visual {
-    right: 15px;
+    right: -20px;
     opacity: 0.55;
   }
 
   .hero-content {
-    max-width: 680px;
+    max-width: 720px;
   }
 
   .stats-grid {
@@ -1974,7 +1974,7 @@ a {
 
   color: white;
 
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 700;
 
   cursor: pointer;
@@ -2100,9 +2100,9 @@ a {
 
   color: #596477;
 
-  font-size: 9px;
+  font-size: 11px;
 
-  line-height: 1.7;
+  line-height: 1.65;
 }
 
 .quality-list {
@@ -2357,7 +2357,7 @@ a {
   margin-top: 3px;
   color: #b9a8ff;
   font-family: "Space Grotesk";
-  font-size: 18px;
+  font-size: 20px;
 }
 
 
@@ -2490,7 +2490,7 @@ a {
 
   border: 1px solid rgba(139,92,246,0.15);
 
-  font-size: 27px;
+  font-size: 30px;
 
   box-shadow:
     0 0 35px rgba(124,58,237,0.08);
@@ -2503,7 +2503,7 @@ a {
 
   font-family: "Space Grotesk";
 
-  font-size: 15px;
+  font-size: 17px;
 }
 
 .recognize-upload p {
@@ -2750,7 +2750,7 @@ a {
       #6366f1
     );
 
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 700;
 
   cursor: pointer;
@@ -2934,9 +2934,9 @@ a {
 
   color: #586376;
 
-  font-size: 9px;
+  font-size: 11px;
 
-  line-height: 1.7;
+  line-height: 1.65;
 }
 
 
@@ -3089,7 +3089,7 @@ a {
 
   font-family: "Space Grotesk";
 
-  font-size: 15px;
+  font-size: 17px;
 }
 
 .score-bar {
@@ -3194,7 +3194,7 @@ a {
 /* Pipeline */
 
 .recognition-pipeline {
-  padding: 21px;
+  padding: 27px;
 
   border-radius: 17px;
 
@@ -3581,7 +3581,7 @@ a {
 
   color: #dce1e9;
 
-  font-size: 10px;
+  font-size: 11px;
 }
 
 .person-cell span {
@@ -3753,9 +3753,9 @@ a {
 
   color: #566174;
 
-  font-size: 9px;
+  font-size: 11px;
 
-  line-height: 1.7;
+  line-height: 1.65;
 }
 
 .people-retry {
@@ -3829,7 +3829,7 @@ a {
 
   gap: 12px;
 
-  padding: 19px;
+  padding: 24px;
 
   border-radius: 15px;
 
@@ -3958,7 +3958,7 @@ a {
 }
 
 .history-intro p {
-  max-width: 720px;
+  max-width: 760px;
   margin: 0;
   color: #8f91aa;
   font-size: 14px;
@@ -3967,7 +3967,7 @@ a {
 
 .page-eyebrow {
   color: #9d82ff;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 800;
   letter-spacing: 1.8px;
 }
@@ -3986,7 +3986,7 @@ a {
   display: flex;
   align-items: center;
   gap: 15px;
-  padding: 19px;
+  padding: 24px;
   background: linear-gradient(
     145deg,
     rgba(28, 29, 50, 0.95),
@@ -3997,8 +3997,8 @@ a {
 }
 
 .history-stat-icon {
-  width: 44px;
-  height: 44px;
+  width: 50px;
+  height: 50px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -4033,7 +4033,7 @@ a {
 
 .history-stat-card strong {
   color: #f4f2ff;
-  font-size: 23px;
+  font-size: 25px;
 }
 
 
@@ -4058,7 +4058,7 @@ a {
 .history-card-header h3 {
   margin: 6px 0 0;
   color: #f4f2ff;
-  font-size: 18px;
+  font-size: 20px;
 }
 
 .history-count {
@@ -4066,7 +4066,7 @@ a {
   border-radius: 8px;
   background: rgba(139, 92, 246, 0.10);
   color: #aa91ff;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
 }
 
@@ -4164,7 +4164,7 @@ a {
   display: block;
   margin-top: 4px;
   color: #70728a;
-  font-size: 10px;
+  font-size: 11px;
 }
 
 
@@ -4257,7 +4257,7 @@ a {
   display: block;
   margin-top: 4px;
   color: #696b81;
-  font-size: 10px;
+  font-size: 11px;
 }
 
 
@@ -4289,7 +4289,7 @@ a {
 .history-empty h3 {
   margin: 0 0 7px;
   color: #e5e3ef;
-  font-size: 15px;
+  font-size: 17px;
 }
 
 .history-empty p {
@@ -4339,7 +4339,7 @@ a {
 .history-info-card {
   display: flex;
   gap: 15px;
-  padding: 19px;
+  padding: 24px;
   border: 1px solid rgba(255, 255, 255, 0.055);
   border-radius: 15px;
   background: rgba(18, 19, 35, 0.65);
@@ -4474,7 +4474,7 @@ a {
 .recognize-engine strong {
   display: block;
   color: #dcdbea;
-  font-size: 10px;
+  font-size: 11px;
 }
 
 .recognize-engine small {
@@ -4563,13 +4563,13 @@ a {
   border-radius: 17px;
   background: rgba(139, 92, 246, 0.09);
   color: #ad96ff;
-  font-size: 27px;
+  font-size: 30px;
 }
 
 .recognize-dropzone h3 {
   margin: 0 0 7px;
   color: #dedcea;
-  font-size: 15px;
+  font-size: 17px;
 }
 
 .recognize-dropzone p {
@@ -4723,14 +4723,14 @@ a {
   border-radius: 50%;
   background: rgba(239, 68, 68, 0.12);
   color: #f87171;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 800;
 }
 
 .recognize-error p {
   margin: 0;
   color: #e58a8a;
-  font-size: 10px;
+  font-size: 11px;
   line-height: 1.5;
 }
 
@@ -4826,13 +4826,13 @@ a {
   border-radius: 18px;
   background: rgba(139, 92, 246, 0.08);
   color: #9b83ef;
-  font-size: 27px;
+  font-size: 30px;
 }
 
 .recognize-empty h3 {
   margin: 0 0 8px;
   color: #dedcea;
-  font-size: 15px;
+  font-size: 17px;
 }
 
 .recognize-empty > p {
@@ -4921,7 +4921,7 @@ a {
 .scanning-state h3 {
   margin: 0 0 7px;
   color: #e3e1ed;
-  font-size: 15px;
+  font-size: 17px;
 }
 
 .scanning-state > p {
@@ -5006,7 +5006,7 @@ a {
   margin: 4px 0;
   overflow: hidden;
   color: #e7e5f1;
-  font-size: 15px;
+  font-size: 17px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -5082,7 +5082,7 @@ a {
   display: block;
   margin-top: 4px;
   color: #e9e7f4;
-  font-size: 23px;
+  font-size: 25px;
 }
 
 .threshold-label {
@@ -5093,7 +5093,7 @@ a {
   display: inline;
   margin-left: 5px;
   color: #a991f2;
-  font-size: 10px;
+  font-size: 11px;
 }
 
 .large-similarity-track {
@@ -5171,7 +5171,7 @@ a {
   display: block;
   margin-bottom: 4px;
   color: #d5d3e0;
-  font-size: 10px;
+  font-size: 11px;
 }
 
 .decision-explanation p {
@@ -5260,7 +5260,7 @@ a {
 
 .step-connector {
   color: #4e5064;
-  font-size: 15px;
+  font-size: 17px;
 }
 
 
@@ -5429,7 +5429,7 @@ a {
 
 .architecture-arrow {
   color: #5c5871;
-  font-size: 15px;
+  font-size: 17px;
 }
 
 
@@ -5461,7 +5461,7 @@ a {
   background: rgba(139,92,246,.09);
   color: #a993ed;
   font-family: monospace;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 800;
 }
 
@@ -5550,7 +5550,7 @@ a {
   max-width: 800px;
   margin: 0;
   color: #77798e;
-  font-size: 10px;
+  font-size: 11px;
   line-height: 1.7;
 }
 
@@ -5562,7 +5562,7 @@ a {
   grid-template-columns: 1fr auto auto;
   align-items: center;
   gap: 20px;
-  padding: 21px;
+  padding: 27px;
   border: 1px solid rgba(255,255,255,.055);
   border-radius: 16px;
   background: rgba(18,19,35,.75);
@@ -5571,7 +5571,7 @@ a {
 .evaluation-card h3 {
   margin: 6px 0;
   color: #e0deea;
-  font-size: 15px;
+  font-size: 17px;
 }
 
 .evaluation-card p {
