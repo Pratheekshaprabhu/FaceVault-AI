@@ -6131,3 +6131,224 @@ body,
     height: 315px !important;
   }
 }
+/* =========================================================
+   FACEVAULT - FINAL FULL WIDTH DASHBOARD FIX
+   ========================================================= */
+
+/* Make the application use the complete browser width */
+html,
+body,
+#root {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+}
+
+/* Sidebar stays on the left, workspace fills everything else */
+.app-shell {
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* =========================
+   DESKTOP WORKSPACE
+   ========================= */
+
+@media (min-width: 851px) {
+
+  .main-content {
+    width: calc(100% - 280px) !important;
+    max-width: none !important;
+    margin-left: 280px !important;
+    margin-right: 0 !important;
+    padding: 0 !important;
+
+    display: block !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Header uses full workspace */
+  .top-header {
+    width: 100% !important;
+    max-width: none !important;
+    box-sizing: border-box !important;
+    padding-left: 32px !important;
+    padding-right: 32px !important;
+  }
+
+  /* Dashboard page fills workspace */
+  .page {
+    width: 100% !important;
+    max-width: none !important;
+
+    margin: 0 !important;
+
+    padding: 28px 32px 55px !important;
+
+    box-sizing: border-box !important;
+  }
+
+  /* =========================
+     HERO
+     ========================= */
+
+  .hero {
+    width: 100% !important;
+    max-width: none !important;
+
+    margin: 0 !important;
+
+    min-height: 370px !important;
+    height: 370px !important;
+
+    box-sizing: border-box !important;
+
+    display: grid !important;
+    grid-template-columns: 55% 45% !important;
+
+    overflow: hidden !important;
+  }
+
+  .hero-content {
+    width: 100% !important;
+    max-width: none !important;
+
+    padding: 38px 25px 35px 42px !important;
+
+    box-sizing: border-box !important;
+  }
+
+  .hero h2 {
+    max-width: 620px !important;
+    font-size: 48px !important;
+    line-height: 1.05 !important;
+  }
+
+  .hero-content > p {
+    max-width: 570px !important;
+    font-size: 14px !important;
+    line-height: 1.65 !important;
+  }
+
+  /* AI visual stays on right side */
+  .ai-visual {
+    position: relative !important;
+
+    width: 100% !important;
+    height: 100% !important;
+
+    right: auto !important;
+    top: auto !important;
+
+    transform: none !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    opacity: 1 !important;
+  }
+
+  /* =========================
+     STATISTICS
+     ========================= */
+
+  .section {
+    width: 100% !important;
+    max-width: none !important;
+
+    margin-top: 34px !important;
+  }
+
+  .stats-grid {
+    width: 100% !important;
+    max-width: none !important;
+
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+
+    gap: 16px !important;
+  }
+
+  .stat-card {
+    min-height: 120px !important;
+    box-sizing: border-box !important;
+  }
+
+  /* =========================
+     AI PIPELINE
+     ========================= */
+
+  .pipeline {
+    width: 100% !important;
+    max-width: none !important;
+
+    display: grid !important;
+
+    grid-template-columns:
+      repeat(4, minmax(0, 1fr)) !important;
+
+    gap: 16px !important;
+  }
+
+  .pipeline-arrow {
+    display: none !important;
+  }
+
+  .pipeline-card {
+    min-height: 145px !important;
+  }
+
+  /* =========================
+     ACTIVITY
+     ========================= */
+
+  .activity-card {
+    width: 100% !important;
+    max-width: none !important;
+  }
+}
+
+
+/* =========================================================
+   LARGE LAPTOP / DESKTOP
+   ========================================================= */
+
+@media (min-width: 1200px) {
+
+  .page {
+    padding-left: 34px !important;
+    padding-right: 34px !important;
+  }
+
+  .hero {
+    height: 375px !important;
+    min-height: 375px !important;
+  }
+
+  .hero-content {
+    padding-left: 48px !important;
+  }
+
+  .hero h2 {
+    font-size: 50px !important;
+  }
+}
+
+
+/* =========================================================
+   VERY LARGE SCREEN
+   ========================================================= */
+
+@media (min-width: 1500px) {
+
+  .page {
+    padding-left: 38px !important;
+    padding-right: 38px !important;
+  }
+
+  .hero {
+    height: 385px !important;
+    min-height: 385px !important;
+  }
+}
