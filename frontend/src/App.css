@@ -5648,12 +5648,13 @@ a {
     grid-column: 1 / -1;
   }
 }
+
 /* =========================================================
-   FINAL DESKTOP DASHBOARD ALIGNMENT
+   STANDARD RESPONSIVE DASHBOARD LAYOUT
    ========================================================= */
 
-@media (min-width: 1200px) {
-
+/* Desktop */
+@media (min-width: 1201px) {
   .main-content {
     width: calc(100% - 280px);
     margin-left: 280px;
@@ -5662,303 +5663,284 @@ a {
 
   .top-header {
     width: 100%;
-    padding: 30px 52px;
+    padding: 0 48px;
   }
 
   .page {
     width: 100%;
-    max-width: none !important;
-    margin: 0 !important;
-    padding: 38px 52px 70px !important;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 36px 48px 64px;
   }
 
-  /* Make hero use the full workspace */
+  /* Hero: two clean columns */
   .hero {
-    width: 100% !important;
+    width: 100%;
     min-height: 500px;
-    margin: 0 !important;
-    padding: 55px 65px !important;
     display: grid;
-    grid-template-columns: minmax(0, 1.15fr) minmax(380px, 0.85fr);
-    gap: 45px;
+    grid-template-columns: minmax(0, 1.35fr) minmax(360px, 0.85fr);
     align-items: center;
+    gap: 32px;
+    padding: 0;
   }
 
   .hero-content {
-    width: 100%;
+    position: relative;
+    z-index: 2;
+    width: auto;
     max-width: 760px;
+    min-width: 0;
+    padding: 56px 0 56px 56px;
   }
 
-  .hero-content h2 {
-    font-size: clamp(46px, 4vw, 64px) !important;
-    line-height: 1.05;
-    margin: 22px 0 24px;
-  }
-
-  .hero-content p {
+  .hero h2 {
     max-width: 700px;
-    font-size: 18px;
+    font-size: clamp(42px, 4vw, 60px);
+    line-height: 1.06;
+    letter-spacing: -2px;
+  }
+
+  .hero-content > p {
+    max-width: 620px;
+    font-size: 16px;
     line-height: 1.7;
   }
 
   .hero-buttons {
-    margin-top: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 11px;
   }
 
   .hero-meta {
-    margin-top: 40px;
+    display: flex;
+    gap: 28px;
   }
 
+  /* AI visual stays entirely in the right column */
   .ai-visual {
-    min-height: 390px;
+    position: relative;
+    top: auto;
+    right: auto;
+    transform: none;
     width: 100%;
+    height: 420px;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+  }
+
+  .orbital-one {
+    width: 390px;
+    height: 390px;
+  }
+
+  .orbital-two {
+    width: 325px;
+    height: 325px;
+  }
+
+  .orbital-three {
+    width: 260px;
+    height: 260px;
+  }
+
+  .face-frame {
+    width: 220px;
+    height: 275px;
   }
 
   /* Statistics */
   .stats-grid {
-    width: 100%;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 22px;
-  }
-
-  .stat-card {
-    min-height: 155px;
-    padding: 28px;
-  }
-
-  /* Pipeline */
-  .pipeline {
-    width: 100%;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 18px;
   }
 
-  .pipeline-card {
-    min-height: 190px;
-    padding: 28px;
+  /* Pipeline */
+  .pipeline {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
   }
 
   .pipeline-arrow {
     display: none;
   }
 
-  /* Activity */
-  .activity-card {
-    width: 100%;
-  }
-
-  /* Section spacing */
-  .section {
-    width: 100%;
-    margin-top: 55px;
-  }
-
-  .section-heading {
-    margin-bottom: 22px;
+  .pipeline-card {
+    min-width: 0;
   }
 }
 
 
-/* =========================================================
-   LARGE SCREENS
-   ========================================================= */
-
-@media (min-width: 1600px) {
-
-  .top-header {
-    padding-left: 65px;
-    padding-right: 65px;
-  }
-
+/* Large desktop */
+@media (min-width: 1500px) {
   .page {
-    padding-left: 65px !important;
-    padding-right: 65px !important;
+    max-width: 1700px;
+    padding-left: 56px;
+    padding-right: 56px;
   }
 
   .hero {
-    min-height: 540px;
-    padding: 65px 75px !important;
-    grid-template-columns: 1.2fr 0.8fr;
+    min-height: 520px;
+    grid-template-columns: minmax(0, 1.3fr) minmax(400px, 0.7fr);
+    gap: 40px;
   }
 
-  .hero-content h2 {
-    font-size: 68px !important;
+  .hero-content {
+    padding-left: 64px;
   }
 
-  .hero-content p {
-    font-size: 19px;
-    max-width: 760px;
+  .hero h2 {
+    font-size: 62px;
+  }
+
+  .hero-content > p {
+    font-size: 17px;
+    max-width: 650px;
   }
 
   .ai-visual {
-    min-height: 430px;
+    height: 440px;
   }
 }
 
 
-/* =========================================================
-   LAPTOP
-   ========================================================= */
-
-@media (min-width: 769px) and (max-width: 1199px) {
-
+/* Laptop */
+@media (min-width: 769px) and (max-width: 1200px) {
   .main-content {
     width: calc(100% - 240px);
     margin-left: 240px;
   }
 
+  .top-header {
+    padding: 0 30px;
+  }
+
   .page {
-    padding: 30px !important;
+    padding: 30px;
   }
 
   .hero {
-    padding: 40px !important;
+    min-height: 480px;
+    grid-template-columns: minmax(0, 1.15fr) minmax(300px, 0.85fr);
+    gap: 15px;
   }
 
-  .hero-content h2 {
-    font-size: 42px !important;
+  .hero-content {
+    padding: 45px 0 45px 35px;
+  }
+
+  .hero h2 {
+    font-size: 44px;
+  }
+
+  .hero-content > p {
+    max-width: 500px;
+    font-size: 15px;
+  }
+
+  .ai-visual {
+    position: relative;
+    top: auto;
+    right: auto;
+    transform: none;
+    width: 100%;
+    height: 350px;
+  }
+
+  .orbital-one {
+    width: 320px;
+    height: 320px;
+  }
+
+  .orbital-two {
+    width: 270px;
+    height: 270px;
+  }
+
+  .orbital-three {
+    width: 220px;
+    height: 220px;
+  }
+
+  .face-frame {
+    width: 190px;
+    height: 240px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pipeline {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pipeline-arrow {
+    display: none;
   }
 }
-/* =========================================================
-   FINAL HERO FIX
-   ========================================================= */
 
-@media (min-width: 1200px) {
 
+/* Tablet / compact layout */
+@media (max-width: 768px) {
+  .ai-visual {
+    position: absolute;
+    top: 50%;
+    right: -45px;
+    transform: translateY(-50%);
+    opacity: 0.18;
+    pointer-events: none;
+  }
+}
+
+
+/* Mobile */
+@media (max-width: 600px) {
   .hero {
-    width: 100% !important;
-    max-width: none !important;
-    min-height: 500px !important;
-
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: center !important;
-
-    gap: 60px !important;
-    padding: 55px 65px !important;
-
-    margin: 0 !important;
-    box-sizing: border-box !important;
-    overflow: hidden !important;
+    min-height: 540px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
   }
 
-  /* LEFT SIDE — TEXT */
   .hero-content {
-    flex: 1 1 58% !important;
-    width: auto !important;
-    max-width: 760px !important;
-    min-width: 0 !important;
-
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: flex-start !important;
+    padding: 32px 25px;
   }
 
-  .hero-content h2 {
-    width: 100% !important;
-    max-width: 760px !important;
-
-    font-size: clamp(44px, 4vw, 64px) !important;
-    line-height: 1.08 !important;
-
-    white-space: normal !important;
-    word-break: normal !important;
-    overflow-wrap: normal !important;
-
-    margin: 22px 0 24px !important;
+  .hero h2 {
+    font-size: 37px;
+    letter-spacing: -1.2px;
   }
 
-  .hero-content p {
-    width: 100% !important;
-    max-width: 680px !important;
-
-    font-size: 18px !important;
-    line-height: 1.65 !important;
-
-    white-space: normal !important;
-    word-break: normal !important;
+  .hero-content > p {
+    max-width: 100%;
+    font-size: 14px;
   }
 
   .hero-buttons {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: wrap !important;
-    gap: 14px !important;
-
-    width: auto !important;
-    margin-top: 30px !important;
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .hero-meta {
-    display: flex !important;
-    flex-direction: row !important;
-    gap: 0 !important;
-
-    margin-top: 38px !important;
-  }
-
-  /* RIGHT SIDE — AI VISUAL */
-  .ai-visual {
-    flex: 0 1 42% !important;
-
-    width: auto !important;
-    max-width: 500px !important;
-    min-width: 360px !important;
-
-    min-height: 400px !important;
-
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-
-    position: relative !important;
-  }
-
-  .face-frame {
-    width: 280px !important;
-    height: 320px !important;
-  }
-
-  /* Prevent visual from covering the text */
-  .orbital {
-    pointer-events: none !important;
-  }
-}
-
-
-/* =========================================================
-   VERY LARGE DESKTOP
-   ========================================================= */
-
-@media (min-width: 1600px) {
-
-  .hero {
-    min-height: 540px !important;
-    padding: 65px 75px !important;
-    gap: 70px !important;
-  }
-
-  .hero-content {
-    flex-basis: 60% !important;
-  }
-
-  .hero-content h2 {
-    font-size: 66px !important;
-  }
-
-  .hero-content p {
-    font-size: 19px !important;
-    max-width: 720px !important;
+    gap: 15px;
+    flex-wrap: wrap;
   }
 
   .ai-visual {
-    flex-basis: 40% !important;
-    max-width: 520px !important;
-    min-height: 430px !important;
+    display: none;
   }
 
-  .face-frame {
-    width: 300px !important;
-    height: 350px !important;
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pipeline {
+    grid-template-columns: 1fr;
   }
 }
