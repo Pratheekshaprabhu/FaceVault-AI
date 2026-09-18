@@ -1,14 +1,25 @@
 import cv2
 import numpy as np
+import os
 
 
 class FaceMatcher:
     def __init__(self, threshold=0.45):
         self.threshold = threshold
 
-        # SFace recognizer
+        model_path = os.path.join(
+            os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
+            "models",
+            "sface.onnx"
+        )
+
+        if not os.path.exists(model_path):
+            raise FileNotFoundError(
+                f"SFace model not found at: {model_path}"
+            )
+
         self.recognizer = cv2.FaceRecognizerSF.create(
-            "models/sface.onnx",
+            model_path,
             ""
         )
 
@@ -16,6 +27,19 @@ class FaceMatcher:
         """
         Compare two face embeddings using cosine similarity.
         """
+
+        if embedding1 is None or embedding2 is None:
+            raise ValueError("Invalid face embedding.")
+
+        embedding1 = np.asarray(
+            embedding1,
+            dtype=np.float32
+        )
+
+        embedding2 = np.asarray(
+            embedding2,
+            dtype=np.float32
+        )
 
         score = self.recognizer.match(
             embedding1,
@@ -62,6 +86,6 @@ class FaceMatcher:
 
         return {
             "identity": best_identity,
-            "score": best_score,
+            "score": float(best_score),
             "status": status
         }

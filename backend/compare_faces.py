@@ -18,14 +18,18 @@ def get_embedding(image_path):
     print(image_path)
     print("Image shape:", image.shape)
     print("Faces detected:", len(faces))
-    print("Detected face data:")
-    print(faces[0])
 
     if len(faces) == 0:
         raise ValueError("No face detected")
 
+    print("Detected face data:")
+    print(faces[0])
+
     embedder = FaceEmbedder()
-    embedding = embedder.get_embedding(image, faces[0])
+    embedding = embedder.get_embedding(
+        image,
+        faces[0]
+    )
 
     print("Embedding shape:", embedding.shape)
     print("First 10 values:", embedding[0][:10])
@@ -34,33 +38,67 @@ def get_embedding(image_path):
     return embedding
 
 
-embedding1 = get_embedding("data/test/test.jpg")
+embedding1 = get_embedding(
+    "data/test/test.jpg"
+)
 
 print("\n-----------------------------\n")
 
-embedding2 = get_embedding("data/test/unknown.jpg")
+embedding2 = get_embedding(
+    "data/test/unknown.jpg"
+)
 
 print("\n========== EMBEDDING CHECK ==========")
 
-print("Embeddings identical:",
-      np.array_equal(embedding1, embedding2))
+print(
+    "Embeddings identical:",
+    np.array_equal(
+        embedding1,
+        embedding2
+    )
+)
 
-print("Embeddings approximately identical:",
-      np.allclose(embedding1, embedding2))
+print(
+    "Embeddings approximately identical:",
+    np.allclose(
+        embedding1,
+        embedding2
+    )
+)
 
-print("Maximum absolute difference:",
-      np.max(np.abs(embedding1 - embedding2)))
+print(
+    "Maximum absolute difference:",
+    np.max(
+        np.abs(
+            embedding1 - embedding2
+        )
+    )
+)
 
 
 matcher = FaceMatcher()
 
-score = matcher.compare(embedding1, embedding2)
+score = matcher.compare(
+    embedding1,
+    embedding2
+)
 
 print("\n========== MATCHING RESULT ==========")
-print("Cosine similarity:", score)
-print("Threshold:", matcher.threshold)
+
+print(
+    "Cosine similarity:",
+    score
+)
+
+print(
+    "Threshold:",
+    matcher.threshold
+)
 
 if score >= matcher.threshold:
+
     print("Decision: MATCH")
+
 else:
+
     print("Decision: UNKNOWN")
