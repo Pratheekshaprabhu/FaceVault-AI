@@ -5819,3 +5819,146 @@ a {
     font-size: 42px !important;
   }
 }
+/* =========================================================
+   FINAL HERO FIX
+   ========================================================= */
+
+@media (min-width: 1200px) {
+
+  .hero {
+    width: 100% !important;
+    max-width: none !important;
+    min-height: 500px !important;
+
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+
+    gap: 60px !important;
+    padding: 55px 65px !important;
+
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+
+  /* LEFT SIDE — TEXT */
+  .hero-content {
+    flex: 1 1 58% !important;
+    width: auto !important;
+    max-width: 760px !important;
+    min-width: 0 !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+
+  .hero-content h2 {
+    width: 100% !important;
+    max-width: 760px !important;
+
+    font-size: clamp(44px, 4vw, 64px) !important;
+    line-height: 1.08 !important;
+
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+
+    margin: 22px 0 24px !important;
+  }
+
+  .hero-content p {
+    width: 100% !important;
+    max-width: 680px !important;
+
+    font-size: 18px !important;
+    line-height: 1.65 !important;
+
+    white-space: normal !important;
+    word-break: normal !important;
+  }
+
+  .hero-buttons {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    gap: 14px !important;
+
+    width: auto !important;
+    margin-top: 30px !important;
+  }
+
+  .hero-meta {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 0 !important;
+
+    margin-top: 38px !important;
+  }
+
+  /* RIGHT SIDE — AI VISUAL */
+  .ai-visual {
+    flex: 0 1 42% !important;
+
+    width: auto !important;
+    max-width: 500px !important;
+    min-width: 360px !important;
+
+    min-height: 400px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    position: relative !important;
+  }
+
+  .face-frame {
+    width: 280px !important;
+    height: 320px !important;
+  }
+
+  /* Prevent visual from covering the text */
+  .orbital {
+    pointer-events: none !important;
+  }
+}
+
+
+/* =========================================================
+   VERY LARGE DESKTOP
+   ========================================================= */
+
+@media (min-width: 1600px) {
+
+  .hero {
+    min-height: 540px !important;
+    padding: 65px 75px !important;
+    gap: 70px !important;
+  }
+
+  .hero-content {
+    flex-basis: 60% !important;
+  }
+
+  .hero-content h2 {
+    font-size: 66px !important;
+  }
+
+  .hero-content p {
+    font-size: 19px !important;
+    max-width: 720px !important;
+  }
+
+  .ai-visual {
+    flex-basis: 40% !important;
+    max-width: 520px !important;
+    min-height: 430px !important;
+  }
+
+  .face-frame {
+    width: 300px !important;
+    height: 350px !important;
+  }
+}
