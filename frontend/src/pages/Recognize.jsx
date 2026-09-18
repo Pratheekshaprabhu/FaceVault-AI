@@ -1,108 +1,569 @@
-import { useRef, useState } from "react";
+import {
+  useEffect,
+  useRef,
+  useState
+} from "react";
+
 import axios from "axios";
 
+
 const API = "http://127.0.0.1:8000/api/v1";
+
 const MATCH_THRESHOLD = 0.45;
 
+
 function Recognize() {
+
   const inputRef = useRef(null);
 
+  const videoRef = useRef(null);
+
+  const canvasRef = useRef(null);
+
+  const streamRef = useRef(null);
+
+
   const [file, setFile] = useState(null);
+
   const [preview, setPreview] = useState("");
+
   const [results, setResults] = useState([]);
+
   const [scanning, setScanning] = useState(false);
+
   const [error, setError] = useState("");
 
+
+  const [cameraOpen, setCameraOpen] = useState(false);
+
+  const [cameraLoading, setCameraLoading] = useState(false);
+
+
+  // =========================================================
+  // STOP CAMERA
+  // =========================================================
+
+  const stopCamera = () => {
+
+    if (streamRef.current) {
+
+      streamRef.current
+        .getTracks()
+        .forEach((track) => {
+          track.stop();
+        });
+
+      streamRef.current = null;
+    }
+
+
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
+
+
+    setCameraOpen(false);
+
+    setCameraLoading(false);
+  };
+
+
+  // =========================================================
+  // CLEAN CAMERA WHEN PAGE IS LEFT
+  // =========================================================
+
+  useEffect(() => {
+
+    return () => {
+
+      if (streamRef.current) {
+
+        streamRef.current
+          .getTracks()
+          .forEach((track) => {
+            track.stop();
+          });
+      }
+
+    };
+
+  }, []);
+
+
+  // =========================================================
+  // HANDLE IMAGE
+  // =========================================================
+
   const handleFile = (selectedFile) => {
+
     if (!selectedFile) return;
 
+
     setError("");
+
     setResults([]);
+
 
     if (!selectedFile.type.startsWith("image/")) {
-      setError("Please select a valid image file.");
+
+      setError(
+        "Please select a valid image file."
+      );
+
       return;
     }
 
-    if (selectedFile.size > 5 * 1024 * 1024) {
-      setError("Image size must be less than 5 MB.");
+
+    if (
+      selectedFile.size >
+      5 * 1024 * 1024
+    ) {
+
+      setError(
+        "Image size must be less than 5 MB."
+      );
+
       return;
     }
+
+
+    if (preview) {
+      URL.revokeObjectURL(preview);
+    }
+
 
     setFile(selectedFile);
-    setPreview(URL.createObjectURL(selectedFile));
+
+    setPreview(
+      URL.createObjectURL(selectedFile)
+    );
+
+
+    stopCamera();
   };
+
+
+  // =========================================================
+  // FILE INPUT
+  // =========================================================
 
   const handleInputChange = (event) => {
-    handleFile(event.target.files[0]);
+
+    handleFile(
+      event.target.files[0]
+    );
+
   };
+
+
+  // =========================================================
+  // DRAG & DROP
+  // =========================================================
 
   const handleDrop = (event) => {
+
     event.preventDefault();
 
-    const droppedFile = event.dataTransfer.files[0];
+
+    const droppedFile =
+      event.dataTransfer.files[0];
+
 
     handleFile(droppedFile);
+
   };
 
+
+  // =========================================================
+  // REMOVE IMAGE
+  // =========================================================
+
   const removeImage = () => {
+
+    if (preview) {
+      URL.revokeObjectURL(preview);
+    }
+
+
     setFile(null);
+
     setPreview("");
+
     setResults([]);
+
     setError("");
+
 
     if (inputRef.current) {
       inputRef.current.value = "";
     }
+
   };
 
-  const recognizeFace = async () => {
-    if (!file) {
-      setError("Please select an image first.");
+
+  // =========================================================
+  // OPEN CAMERA
+  // =========================================================
+
+  const openCamera = async () => {
+
+    setError("");
+
+    setResults("");
+
+    stopCamera();
+
+
+    try {
+
+      setCameraLoading(true);
+
+
+      if (
+        !navigator.mediaDevices ||
+        !navigator.mediaDevices.getUserMedia
+      ) {
+
+        throw new Error(
+          "Camera access is not supported by this browser."
+        );
+
+      }
+
+
+      const stream =
+        await navigator.mediaDevices.getUserMedia({
+
+          video: {
+            facingMode: "user",
+
+            width: {
+              ideal: 1280
+            },
+
+            height: {
+              ideal: 720
+            }
+          },
+
+          audio: false
+
+        });
+
+
+      streamRef.current = stream;
+
+      setCameraOpen(true);
+
+
+      setTimeout(() => {
+
+        if (videoRef.current) {
+
+          videoRef.current.srcObject =
+            stream;
+
+
+          videoRef.current
+            .play()
+            .catch(() => {});
+
+        }
+
+
+        setCameraLoading(false);
+
+      }, 100);
+
+
+    } catch (err) {
+
+      console.error(
+        "Camera error:",
+        err
+      );
+
+
+      setCameraLoading(false);
+
+      setCameraOpen(false);
+
+
+      if (
+        err.name ===
+        "NotAllowedError"
+      ) {
+
+        setError(
+          "Camera permission was denied. Please allow camera access in your browser."
+        );
+
+      } else if (
+        err.name ===
+        "NotFoundError"
+      ) {
+
+        setError(
+          "No camera was found on this device."
+        );
+
+      } else if (
+        err.name ===
+        "NotReadableError"
+      ) {
+
+        setError(
+          "The camera is already being used by another application."
+        );
+
+      } else {
+
+        setError(
+          err.message ||
+          "Unable to access the camera."
+        );
+
+      }
+
+    }
+
+  };
+
+
+  // =========================================================
+  // CAPTURE PHOTO
+  // =========================================================
+
+  const capturePhoto = () => {
+
+    const video =
+      videoRef.current;
+
+    const canvas =
+      canvasRef.current;
+
+
+    if (!video || !canvas) {
+
+      setError(
+        "Camera is not ready."
+      );
+
       return;
     }
 
-    setScanning(true);
-    setError("");
-    setResults([]);
 
-    const formData = new FormData();
+    if (
+      video.readyState < 2 ||
+      video.videoWidth === 0 ||
+      video.videoHeight === 0
+    ) {
 
-    formData.append("file", file);
-
-    try {
-      const response = await axios.post(
-        `${API}/recognize`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data"
-          }
-        }
+      setError(
+        "Camera is not ready yet. Please try again."
       );
 
-      setResults(response.data.results || []);
+      return;
+    }
+
+
+    canvas.width =
+      video.videoWidth;
+
+    canvas.height =
+      video.videoHeight;
+
+
+    const context =
+      canvas.getContext("2d");
+
+
+    if (!context) {
+
+      setError(
+        "Unable to capture camera image."
+      );
+
+      return;
+    }
+
+
+    /*
+      Mirror the captured image so the
+      saved image looks natural.
+    */
+
+    context.save();
+
+    context.translate(
+      canvas.width,
+      0
+    );
+
+    context.scale(-1, 1);
+
+
+    context.drawImage(
+      video,
+      0,
+      0,
+      canvas.width,
+      canvas.height
+    );
+
+
+    context.restore();
+
+
+    canvas.toBlob(
+      (blob) => {
+
+        if (!blob) {
+
+          setError(
+            "Unable to capture the image."
+          );
+
+          return;
+        }
+
+
+        const capturedFile =
+          new File(
+            [blob],
+            `camera-recognition-${Date.now()}.jpg`,
+            {
+              type: "image/jpeg"
+            }
+          );
+
+
+        if (preview) {
+          URL.revokeObjectURL(preview);
+        }
+
+
+        const imageURL =
+          URL.createObjectURL(blob);
+
+
+        setFile(capturedFile);
+
+        setPreview(imageURL);
+
+        setResults([]);
+
+        setError("");
+
+
+        stopCamera();
+
+      },
+
+      "image/jpeg",
+
+      0.92
+
+    );
+
+  };
+
+
+  // =========================================================
+  // RECOGNIZE FACE
+  // =========================================================
+
+  const recognizeFace = async () => {
+
+    if (!file) {
+
+      setError(
+        "Please select or capture an image first."
+      );
+
+      return;
+    }
+
+
+    setScanning(true);
+
+    setError("");
+
+    setResults([]);
+
+
+    const formData =
+      new FormData();
+
+
+    formData.append(
+      "file",
+      file
+    );
+
+
+    try {
+
+      const response =
+        await axios.post(
+
+          `${API}/recognize`,
+
+          formData,
+
+          {
+            headers: {
+              "Content-Type":
+                "multipart/form-data"
+            }
+          }
+
+        );
+
+
+      setResults(
+        response.data.results || []
+      );
+
 
     } catch (err) {
+
       console.error(err);
+
 
       const message =
         err.response?.data?.detail ||
         "Face recognition failed. Please try another image.";
 
+
       setError(message);
 
+
     } finally {
+
       setScanning(false);
+
     }
+
   };
 
-  const identifiedResults = results.filter(
-    (result) => result.status === "identified"
-  );
+
+  // =========================================================
+  // IDENTIFIED RESULTS
+  // =========================================================
+
+  const identifiedResults =
+    results.filter(
+      (result) =>
+        result.status ===
+        "identified"
+    );
+
 
   return (
+
     <div className="recognize-page">
+
 
       {/* =====================================================
           HEADER
@@ -111,28 +572,42 @@ function Recognize() {
       <section className="recognize-intro">
 
         <div>
+
           <span className="page-eyebrow">
             AI IDENTITY VERIFICATION
           </span>
+
 
           <h2>
             Recognize a face
           </h2>
 
+
           <p>
-            Upload an image and FaceVault will detect faces,
-            generate SFace embeddings, compare them with enrolled
-            identities and reject unknown individuals.
+            Upload an image or use your camera and FaceVault
+            will detect faces, generate SFace embeddings,
+            compare them with enrolled identities and
+            reject unknown individuals.
           </p>
+
         </div>
+
 
         <div className="recognize-engine">
 
           <span className="engine-live-dot"></span>
 
+
           <div>
-            <strong>AI Engine</strong>
-            <small>Online</small>
+
+            <strong>
+              AI Engine
+            </strong>
+
+            <small>
+              Online
+            </small>
+
           </div>
 
         </div>
@@ -146,73 +621,227 @@ function Recognize() {
 
       <section className="recognize-workspace">
 
+
         {/* ===================================================
-            UPLOAD / PREVIEW
+            UPLOAD / CAMERA / PREVIEW
         =================================================== */}
 
         <div className="recognize-upload-card">
 
+
           <div className="card-top">
 
             <div>
+
               <span className="page-eyebrow">
                 STEP 01
               </span>
 
+
               <h3>
-                Upload image
+                Upload or capture
               </h3>
+
             </div>
 
+
             {file && (
+
               <button
+                type="button"
                 className="remove-button"
                 onClick={removeImage}
               >
                 × Remove
               </button>
+
             )}
 
           </div>
 
 
-          {!preview ? (
+          {/* =================================================
+              CAMERA VIEW
+          ================================================= */}
 
-            <div
-              className="recognize-dropzone"
-              onDragOver={(event) => event.preventDefault()}
-              onDrop={handleDrop}
-              onClick={() => inputRef.current?.click()}
-            >
+          {cameraOpen && !preview && (
 
-              <input
-                ref={inputRef}
-                type="file"
-                accept="image/jpeg,image/png,image/webp"
-                onChange={handleInputChange}
-                hidden
-              />
+            <div className="camera-container">
 
-              <div className="upload-icon">
-                ↑
+              <div className="camera-preview-wrapper">
+
+                <video
+                  ref={videoRef}
+                  className="camera-preview"
+                  autoPlay
+                  playsInline
+                  muted
+                />
+
+
+                <div className="camera-frame">
+
+                  <div className="camera-corner top-left"></div>
+
+                  <div className="camera-corner top-right"></div>
+
+                  <div className="camera-corner bottom-left"></div>
+
+                  <div className="camera-corner bottom-right"></div>
+
+                </div>
+
+
+                <div className="camera-status">
+
+                  <span className="camera-live-dot"></span>
+
+                  CAMERA LIVE
+
+                </div>
+
               </div>
 
-              <h3>
-                Drop your image here
-              </h3>
 
-              <p>
-                or click to browse from your computer
-              </p>
+              <div className="camera-actions">
 
-              <div className="upload-formats">
-                JPG&nbsp; • &nbsp;PNG&nbsp; • &nbsp;WEBP
-                <span>Maximum 5 MB</span>
+                <button
+                  type="button"
+                  className="camera-capture-button"
+                  onClick={capturePhoto}
+                  disabled={cameraLoading}
+                >
+
+                  <span>
+                    ◉
+                  </span>
+
+                  Capture Photo
+
+                </button>
+
+
+                <button
+                  type="button"
+                  className="camera-cancel-button"
+                  onClick={stopCamera}
+                >
+                  Cancel
+                </button>
+
               </div>
 
             </div>
 
-          ) : (
+          )}
+
+
+          {/* =================================================
+              UPLOAD AREA
+          ================================================= */}
+
+          {!preview && !cameraOpen && (
+
+            <>
+
+              <div
+                className="recognize-dropzone"
+                onDragOver={(event) =>
+                  event.preventDefault()
+                }
+                onDrop={handleDrop}
+                onClick={() =>
+                  inputRef.current?.click()
+                }
+              >
+
+                <input
+                  ref={inputRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  onChange={handleInputChange}
+                  hidden
+                />
+
+
+                <div className="upload-icon">
+                  ↑
+                </div>
+
+
+                <h3>
+                  Drop your image here
+                </h3>
+
+
+                <p>
+                  or click to browse from your computer
+                </p>
+
+
+                <div className="upload-formats">
+
+                  JPG&nbsp; • &nbsp;
+                  PNG&nbsp; • &nbsp;
+                  WEBP
+
+                  <span>
+                    Maximum 5 MB
+                  </span>
+
+                </div>
+
+              </div>
+
+
+              {/* CAMERA BUTTON */}
+
+              <div className="camera-option">
+
+                <div className="camera-option-line">
+
+                  <span></span>
+
+                  <small>
+                    OR
+                  </small>
+
+                  <span></span>
+
+                </div>
+
+
+                <button
+                  type="button"
+                  className="camera-open-button"
+                  onClick={openCamera}
+                  disabled={cameraLoading}
+                >
+
+                  <span className="camera-icon">
+                    ◉
+                  </span>
+
+
+                  {cameraLoading
+                    ? "Opening camera..."
+                    : "Use Camera"
+                  }
+
+                </button>
+
+              </div>
+
+            </>
+
+          )}
+
+
+          {/* =================================================
+              IMAGE PREVIEW
+          ================================================= */}
+
+          {preview && (
 
             <div className="recognize-preview">
 
@@ -221,57 +850,145 @@ function Recognize() {
                 alt="Face recognition preview"
               />
 
+
               {scanning && (
+
                 <div className="recognize-scanner">
 
                   <div className="scanner-line"></div>
 
+
                   <div className="scanner-label">
+
                     <span></span>
+
                     ANALYZING FACE
+
                   </div>
 
                 </div>
+
               )}
 
-              {!scanning && results.length > 0 && (
-                <div className="preview-detected-badge">
-                  <span></span>
-                  {results.length} face
-                  {results.length > 1 ? "s" : ""} detected
-                </div>
-              )}
+
+              {!scanning &&
+                results.length > 0 && (
+
+                  <div className="preview-detected-badge">
+
+                    <span></span>
+
+                    {results.length} face
+                    {results.length > 1
+                      ? "s"
+                      : ""} detected
+
+                  </div>
+
+                )}
 
             </div>
 
           )}
 
+
+          {/* Hidden canvas for camera capture */}
+
+          <canvas
+            ref={canvasRef}
+            style={{
+              display: "none"
+            }}
+          />
+
+
+          {/* RETAKE */}
+
+          {preview && !scanning && (
+
+            <button
+              type="button"
+              className="camera-retake-button"
+              onClick={() => {
+
+                removeImage();
+
+                setTimeout(() => {
+                  openCamera();
+                }, 50);
+
+              }}
+            >
+
+              📷 Retake with Camera
+
+            </button>
+
+          )}
+
+
+          {/* =================================================
+              ERROR
+          ================================================= */}
 
           {error && (
+
             <div className="recognize-error">
-              <span>!</span>
-              <p>{error}</p>
+
+              <span>
+                !
+              </span>
+
+              <p>
+                {error}
+              </p>
+
             </div>
+
           )}
 
+
+          {/* =================================================
+              RECOGNIZE BUTTON
+          ================================================= */}
 
           <button
             className="recognize-button"
-            disabled={!file || scanning}
-            onClick={recognizeFace}
+            disabled={
+              !file ||
+              scanning
+            }
+            onClick={
+              recognizeFace
+            }
           >
 
             {scanning ? (
+
               <>
+
                 <span className="button-spinner"></span>
+
                 Analyzing image...
+
               </>
+
             ) : (
+
               <>
-                <span>◎</span>
+
+                <span>
+                  ◎
+                </span>
+
                 Analyze & Recognize
-                <b>→</b>
+
+                <b>
+                  →
+                </b>
+
               </>
+
             )}
 
           </button>
@@ -279,7 +996,10 @@ function Recognize() {
 
           <div className="recognize-security">
 
-            <span>⌁</span>
+            <span>
+              ⌁
+            </span>
+
 
             <p>
               Your image is processed locally by the
@@ -298,23 +1018,34 @@ function Recognize() {
 
         <div className="recognize-result-card">
 
+
           <div className="card-top">
 
             <div>
+
               <span className="page-eyebrow">
                 STEP 02
               </span>
 
+
               <h3>
                 Recognition result
               </h3>
+
             </div>
 
+
             {results.length > 0 && (
+
               <span className="result-count">
+
                 {results.length} detection
-                {results.length > 1 ? "s" : ""}
+                {results.length > 1
+                  ? "s"
+                  : ""}
+
               </span>
+
             )}
 
           </div>
@@ -332,15 +1063,17 @@ function Recognize() {
 
             <div className="results-list">
 
-              {results.map((result, index) => (
+              {results.map(
+                (result, index) => (
 
-                <RecognitionResult
-                  key={index}
-                  result={result}
-                  index={index}
-                />
+                  <RecognitionResult
+                    key={index}
+                    result={result}
+                    index={index}
+                  />
 
-              ))}
+                )
+              )}
 
             </div>
 
@@ -357,11 +1090,13 @@ function Recognize() {
 
       <section className="recognize-pipeline">
 
+
         <div className="pipeline-heading">
 
           <span className="page-eyebrow">
             AI DECISION PIPELINE
           </span>
+
 
           <h3>
             What happens during recognition?
@@ -372,6 +1107,7 @@ function Recognize() {
 
         <div className="recognize-steps">
 
+
           <RecognizeStep
             number="01"
             title="Detect"
@@ -379,7 +1115,11 @@ function Recognize() {
             description="Finds faces and facial landmarks."
           />
 
-          <div className="step-connector">→</div>
+
+          <div className="step-connector">
+            →
+          </div>
+
 
           <RecognizeStep
             number="02"
@@ -388,7 +1128,11 @@ function Recognize() {
             description="Creates a 128-dimensional face embedding."
           />
 
-          <div className="step-connector">→</div>
+
+          <div className="step-connector">
+            →
+          </div>
+
 
           <RecognizeStep
             number="03"
@@ -397,7 +1141,11 @@ function Recognize() {
             description="Searches enrolled identities."
           />
 
-          <div className="step-connector">→</div>
+
+          <div className="step-connector">
+            →
+          </div>
+
 
           <RecognizeStep
             number="04"
@@ -411,6 +1159,7 @@ function Recognize() {
       </section>
 
     </div>
+
   );
 }
 
@@ -419,21 +1168,35 @@ function Recognize() {
    RECOGNITION RESULT
    ========================================================= */
 
-function RecognitionResult({ result, index }) {
+function RecognitionResult({
+  result,
+  index
+}) {
 
-  const identified = result.status === "identified";
+  const identified =
+    result.status === "identified";
 
-  const score = Number(result.score || 0);
 
-  const percentage = Math.max(
-    0,
-    Math.min(score * 100, 100)
-  );
+  const score =
+    Number(result.score || 0);
+
+
+  const percentage =
+    Math.max(
+      0,
+      Math.min(
+        score * 100,
+        100
+      )
+    );
+
 
   const thresholdPercentage =
     MATCH_THRESHOLD * 100;
 
+
   return (
+
     <div
       className={
         identified
@@ -442,9 +1205,11 @@ function RecognitionResult({ result, index }) {
       }
     >
 
+
       {/* Result Header */}
 
       <div className="result-main">
+
 
         <div
           className={
@@ -453,28 +1218,44 @@ function RecognitionResult({ result, index }) {
               : "result-avatar unknown-result-avatar"
           }
         >
+
           {identified
-            ? (result.identity || "P")
+            ? (
+                result.identity ||
+                "P"
+              )
                 .charAt(0)
                 .toUpperCase()
-            : "?"}
+            : "?"
+          }
+
         </div>
 
 
         <div className="result-identity">
 
           <span>
-            FACE {String(index + 1).padStart(2, "0")}
+            FACE{" "}
+            {String(index + 1).padStart(
+              2,
+              "0"
+            )}
           </span>
 
+
           <h3>
-            {result.identity || "Unknown person"}
+            {result.identity ||
+              "Unknown person"}
           </h3>
 
+
           <p>
+
             {identified
               ? "Identity matched against enrolled database"
-              : "No enrolled identity passed the match threshold"}
+              : "No enrolled identity passed the match threshold"
+            }
+
           </p>
 
         </div>
@@ -487,11 +1268,13 @@ function RecognitionResult({ result, index }) {
               : "decision-badge unknown-badge"
           }
         >
+
           <span></span>
 
           {identified
             ? "IDENTIFIED"
-            : "UNKNOWN"}
+            : "UNKNOWN"
+          }
 
         </div>
 
@@ -502,27 +1285,41 @@ function RecognitionResult({ result, index }) {
 
       <div className="result-similarity">
 
+
         <div className="similarity-header">
 
           <div>
-            <span>SIMILARITY SCORE</span>
+
+            <span>
+              SIMILARITY SCORE
+            </span>
+
 
             <strong>
               {percentage.toFixed(1)}%
             </strong>
+
           </div>
 
+
           <div className="threshold-label">
+
             Threshold
+
             <strong>
-              {thresholdPercentage.toFixed(0)}%
+              {thresholdPercentage.toFixed(
+                0
+              )}
+              %
             </strong>
+
           </div>
 
         </div>
 
 
         <div className="large-similarity-track">
+
 
           <div
             className={
@@ -535,22 +1332,35 @@ function RecognitionResult({ result, index }) {
             }}
           ></div>
 
+
           <div
             className="threshold-marker"
             style={{
               left: `${thresholdPercentage}%`
             }}
           >
+
             <span></span>
+
           </div>
 
         </div>
 
 
         <div className="similarity-scale">
-          <span>0.00</span>
-          <span>0.45 threshold</span>
-          <span>1.00</span>
+
+          <span>
+            0.00
+          </span>
+
+          <span>
+            0.45 threshold
+          </span>
+
+          <span>
+            1.00
+          </span>
+
         </div>
 
       </div>
@@ -560,30 +1370,46 @@ function RecognitionResult({ result, index }) {
 
       <div className="decision-explanation">
 
+
         <div className="decision-icon">
-          {identified ? "✓" : "!"}
+
+          {identified
+            ? "✓"
+            : "!"
+          }
+
         </div>
+
 
         <div>
 
           <strong>
+
             {identified
               ? "Identity verified"
-              : "Identity rejected"}
+              : "Identity rejected"
+            }
+
           </strong>
 
+
           <p>
+
             {identified
+
               ? `The highest similarity score of ${score.toFixed(
                   4
                 )} is above the configured project threshold of ${MATCH_THRESHOLD.toFixed(
                   2
                 )}.`
+
               : `The highest similarity score of ${score.toFixed(
                   4
                 )} is below the configured project threshold of ${MATCH_THRESHOLD.toFixed(
                   2
-                )}. The face is therefore classified as unknown.`}
+                )}. The face is therefore classified as unknown.`
+            }
+
           </p>
 
         </div>
@@ -591,6 +1417,7 @@ function RecognitionResult({ result, index }) {
       </div>
 
     </div>
+
   );
 }
 
@@ -602,30 +1429,45 @@ function RecognitionResult({ result, index }) {
 function EmptyResult() {
 
   return (
+
     <div className="recognize-empty">
+
 
       <div className="empty-result-icon">
         ◎
       </div>
 
+
       <h3>
         Ready for analysis
       </h3>
 
+
       <p>
-        Upload a face image on the left and start
-        recognition to see the AI decision here.
+        Upload a face image or use your camera
+        and start recognition to see the AI
+        decision here.
       </p>
+
 
       <div className="empty-result-tags">
 
-        <span>YuNet Detection</span>
-        <span>SFace Embedding</span>
-        <span>Cosine Matching</span>
+        <span>
+          YuNet Detection
+        </span>
+
+        <span>
+          SFace Embedding
+        </span>
+
+        <span>
+          Cosine Matching
+        </span>
 
       </div>
 
     </div>
+
   );
 }
 
@@ -637,26 +1479,33 @@ function EmptyResult() {
 function ScanningState() {
 
   return (
+
     <div className="scanning-state">
+
 
       <div className="scanning-visual">
 
         <div className="scanning-ring ring-one"></div>
+
         <div className="scanning-ring ring-two"></div>
+
         <div className="scanning-center">
           ◎
         </div>
 
       </div>
 
+
       <h3>
         Analyzing face...
       </h3>
+
 
       <p>
         Detecting facial features and comparing
         biometric embeddings.
       </p>
+
 
       <div className="analysis-status">
 
@@ -669,6 +1518,7 @@ function ScanningState() {
       </div>
 
     </div>
+
   );
 }
 
@@ -685,11 +1535,14 @@ function RecognizeStep({
 }) {
 
   return (
+
     <div className="recognize-step">
+
 
       <div className="recognize-step-number">
         {number}
       </div>
+
 
       <div>
 
@@ -697,9 +1550,11 @@ function RecognizeStep({
           {title}
         </h4>
 
+
         <span>
           {subtitle}
         </span>
+
 
         <p>
           {description}
@@ -708,6 +1563,7 @@ function RecognizeStep({
       </div>
 
     </div>
+
   );
 }
 
