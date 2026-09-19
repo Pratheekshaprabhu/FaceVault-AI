@@ -1,0 +1,21 @@
+[project]
+name = "facevault-ai"
+version = "1.0.0"
+description = "Open-Set Face Recognition and Identity Verification System"
+requires-python = ">=3.12,<3.15"
+
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "python-multipart",
+    "pydantic",
+    "sqlalchemy",
+    "opencv-python==5.0.0.93",
+    "numpy",
+    "pillow",
+    "scikit-learn",
+    "python-dotenv"
+]
+
+[tool.vercel]
+entrypoint = "app.main:app"
