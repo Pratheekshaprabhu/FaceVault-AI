@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 
-const API = "http://127.0.0.1:8000/api/v1";
+const API =  import.meta.env.VITE_API_URL ||
+  "http://127.0.0.1:8000/api/v1";
 
 function Enroll() {
   const fileInputRef = useRef(null);
@@ -133,85 +134,104 @@ function Enroll() {
   // ==========================================
 
   const openCamera = async () => {
-    setError("");
-    setMessage("");
-    setCameraLoading(true);
+  setError("");
+  setMessage("");
+  setCameraLoading(true);
+
+  try {
+    if (!navigator.mediaDevices?.getUserMedia) {
+      throw new Error("Camera is not supported by this browser.");
+    }
+
+    // Stop previous stream if one exists
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => {
+        track.stop();
+      });
+      streamRef.current = null;
+    }
+
+    let stream;
 
     try {
-      if (!navigator.mediaDevices?.getUserMedia) {
-        throw new Error(
-          "Camera is not supported by this browser."
-        );
-      }
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: { ideal: "user" },
+          width: { ideal: 1280 },
+          height: { ideal: 720 },
+          frameRate: { ideal: 30 },
+        },
+        audio: false,
+      });
+    } catch (firstError) {
+      console.warn(
+        "Primary camera request failed:",
+        firstError.name
+      );
 
-      const stream =
-        await navigator.mediaDevices.getUserMedia({
-          video: {
-            facingMode: "user",
-            width: {
-              ideal: 1280,
-            },
-            height: {
-              ideal: 720,
-            },
-          },
-          audio: false,
-        });
+      // Fallback camera request
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: false,
+      });
+    }
 
-      streamRef.current = stream;
+    streamRef.current = stream;
+    setCameraOpen(true);
 
-      setCameraOpen(true);
+  } catch (err) {
+    console.error("Camera error:", err);
 
-      /*
-       * Wait until the video element is rendered
-       * before attaching the camera stream.
-       */
-      setTimeout(() => {
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-
-          videoRef.current
-            .play()
-            .catch((err) => {
-              console.error(
-                "Video playback error:",
-                err
-              );
-            });
-        }
-      }, 100);
-
-    } catch (err) {
-      console.error("Camera error:", err);
-
-      if (err.name === "NotAllowedError") {
+    switch (err.name) {
+      case "NotAllowedError":
         setError(
-          "Camera permission was denied. Please allow camera access in your browser."
+          "Camera permission is blocked. Click the camera icon beside the address bar and allow camera access."
         );
-      } else if (err.name === "NotFoundError") {
+        break;
+
+      case "NotFoundError":
         setError(
-          "No camera was found on this device."
+          "No camera was detected on this device."
         );
-      } else if (err.name === "NotReadableError") {
+        break;
+
+      case "NotReadableError":
         setError(
-          "Camera is already being used by another application."
+          "The camera could not be accessed. Close other apps using the webcam and try again."
         );
-      } else if (err.name === "SecurityError") {
+        break;
+
+      case "OverconstrainedError":
+        setError(
+          "The camera does not support the requested settings. Please try again."
+        );
+        break;
+
+      case "SecurityError":
         setError(
           "Camera access was blocked by browser security settings."
         );
-      } else {
+        break;
+
+      default:
         setError(
-          "Unable to open the camera. Please try again."
+          `Unable to open the camera (${err.name || "unknown error"}).`
         );
-      }
-
-      setCameraOpen(false);
-
-    } finally {
-      setCameraLoading(false);
     }
-  };
+
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => {
+        track.stop();
+      });
+      streamRef.current = null;
+    }
+
+    setCameraOpen(false);
+
+  } finally {
+    setCameraLoading(false);
+  }
+};
 
   // ==========================================
   // CAPTURE PHOTO

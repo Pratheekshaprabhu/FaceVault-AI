@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 
-const API = "http://127.0.0.1:8000/api/v1";
+const API = import.meta.env.VITE_API_URL ||
+  "http://127.0.0.1:8000/api/v1";
 const MATCH_THRESHOLD = 0.45;
 
 function Recognize() {
@@ -156,206 +157,104 @@ function Recognize() {
   ===================================================== */
 
   const openCamera = async () => {
-    setError("");
-    setResults([]);
-    setCameraLoading(true);
+  setError("");
+  setResults([]);
+  setCameraLoading(true);
+
+  try {
+    if (!navigator.mediaDevices?.getUserMedia) {
+      throw new Error("Camera is not supported by this browser.");
+    }
+
+    // Release any previous camera stream
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => {
+        track.stop();
+      });
+      streamRef.current = null;
+    }
+
+    let stream;
 
     try {
-      if (
-        !navigator.mediaDevices ||
-        !navigator.mediaDevices.getUserMedia
-      ) {
-        throw new Error(
-          "Camera is not supported by this browser."
-        );
-      }
-
-      /* Stop any previous camera */
-      if (streamRef.current) {
-        streamRef.current
-          .getTracks()
-          .forEach((track) => track.stop());
-
-        streamRef.current = null;
-      }
-
-      const stream =
-        await navigator.mediaDevices.getUserMedia({
-          video: {
-            facingMode: "user",
-
-            width: {
-              ideal: 1280,
-              min: 640,
-            },
-
-            height: {
-              ideal: 720,
-              min: 480,
-            },
-
-            frameRate: {
-              ideal: 30,
-            },
-          },
-
-          audio: false,
-        });
-
-      streamRef.current = stream;
-
-      setCameraOpen(true);
-
-    } catch (err) {
-      console.error(
-        "Camera error:",
-        err
+      // First try a good-quality front camera
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: { ideal: "user" },
+          width: { ideal: 1280 },
+          height: { ideal: 720 },
+          frameRate: { ideal: 30 },
+        },
+        audio: false,
+      });
+    } catch (firstError) {
+      console.warn(
+        "Primary camera request failed:",
+        firstError.name
       );
 
-      if (
-        err.name === "NotAllowedError"
-      ) {
-        setError(
-          "Camera permission was denied. Please allow camera access in Chrome."
-        );
-      } else if (
-        err.name === "NotFoundError"
-      ) {
-        setError(
-          "No camera was found on this laptop."
-        );
-      } else if (
-        err.name === "NotReadableError"
-      ) {
-        setError(
-          "Camera is already being used by another application."
-        );
-      } else if (
-        err.name === "OverconstrainedError"
-      ) {
-        setError(
-          "The requested camera resolution is not available."
-        );
-      } else {
-        setError(
-          "Unable to open the camera. Please try again."
-        );
-      }
-
-      if (streamRef.current) {
-        streamRef.current
-          .getTracks()
-          .forEach((track) => track.stop());
-
-        streamRef.current = null;
-      }
-
-      setCameraOpen(false);
-
-    } finally {
-      setCameraLoading(false);
-    }
-  };
-
-  /* =====================================================
-     CAPTURE PHOTO
-  ===================================================== */
-
-  const capturePhoto = () => {
-    const video = videoRef.current;
-    const canvas = canvasRef.current;
-
-    if (!video || !canvas) {
-      setError(
-        "Camera is not ready."
-      );
-      return;
+      // Fallback: let the browser choose any available camera
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: false,
+      });
     }
 
-    if (
-      video.readyState < 2 ||
-      video.videoWidth === 0 ||
-      video.videoHeight === 0
-    ) {
-      setError(
-        "Camera is still loading. Please wait a moment."
-      );
-      return;
+    streamRef.current = stream;
+    setCameraOpen(true);
+
+  } catch (err) {
+    console.error("Camera error:", err);
+
+    switch (err.name) {
+      case "NotAllowedError":
+        setError(
+          "Camera permission is blocked. Click the camera icon beside the address bar and allow camera access."
+        );
+        break;
+
+      case "NotFoundError":
+        setError(
+          "No camera was detected. Check that your webcam is connected and enabled."
+        );
+        break;
+
+      case "NotReadableError":
+        setError(
+          "The camera could not be accessed. Close Camera, WhatsApp, Teams, Zoom, Meet, or other apps using the webcam, then try again."
+        );
+        break;
+
+      case "OverconstrainedError":
+        setError(
+          "The selected camera does not support the requested settings. Please try again."
+        );
+        break;
+
+      case "SecurityError":
+        setError(
+          "Camera access was blocked by browser security settings."
+        );
+        break;
+
+      default:
+        setError(
+          `Unable to open the camera (${err.name || "unknown error"}). Please try again.`
+        );
     }
 
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-
-    const context =
-      canvas.getContext("2d");
-
-    if (!context) {
-      setError(
-        "Unable to capture camera image."
-      );
-      return;
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => {
+        track.stop();
+      });
+      streamRef.current = null;
     }
 
-    /*
-     * Mirror the captured image so it matches
-     * the front-camera preview.
-     */
-
-    context.save();
-
-    context.translate(
-      canvas.width,
-      0
-    );
-
-    context.scale(-1, 1);
-
-    context.drawImage(
-      video,
-      0,
-      0,
-      canvas.width,
-      canvas.height
-    );
-
-    context.restore();
-
-    canvas.toBlob(
-      (blob) => {
-        if (!blob) {
-          setError(
-            "Unable to create captured image."
-          );
-          return;
-        }
-
-        const capturedFile =
-          new File(
-            [blob],
-            `camera-recognition-${Date.now()}.jpg`,
-            {
-              type: "image/jpeg",
-            }
-          );
-
-        setFile(capturedFile);
-
-        const imageURL =
-          URL.createObjectURL(
-            capturedFile
-          );
-
-        setPreview(imageURL);
-
-        setResults([]);
-        setError("");
-
-        stopCamera();
-      },
-      "image/jpeg",
-      0.95
-    );
-  };
+    setCameraOpen(false);
+  } finally {
+    setCameraLoading(false);
+  }
+};
 
   /* =====================================================
      RECOGNIZE FACE
