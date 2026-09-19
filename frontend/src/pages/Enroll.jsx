@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 
-const API =  "https://face-vault-ai-1yag-hxq94hxe6-pratheekshaprabhus-projects.vercel.app/api/v1";
+const API =  "https://face-vault-ai-1yag.vercel.app/api/v1";
 
 function Enroll() {
   const fileInputRef = useRef(null);
