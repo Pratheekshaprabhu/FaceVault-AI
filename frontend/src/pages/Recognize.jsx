@@ -46,25 +46,34 @@ function Recognize() {
      CONNECT STREAM AFTER VIDEO IS RENDERED
   ===================================================== */
 
-  useEffect(() => {
-    if (
-      cameraOpen &&
-      videoRef.current &&
-      streamRef.current
-    ) {
-      videoRef.current.srcObject =
-        streamRef.current;
+ useEffect(() => {
+  if (!cameraOpen) return;
 
-      videoRef.current
-        .play()
-        .catch((err) => {
-          console.error(
-            "Camera playback error:",
-            err
-          );
-        });
+  const video = videoRef.current;
+  const stream = streamRef.current;
+
+  if (!video || !stream) return;
+
+  video.srcObject = stream;
+
+  const startVideo = async () => {
+    try {
+      await video.play();
+    } catch (error) {
+      console.error("Video playback error:", error);
     }
-  }, [cameraOpen]);
+  };
+
+  if (video.readyState >= 1) {
+    startVideo();
+  } else {
+    video.onloadedmetadata = startVideo;
+  }
+
+  return () => {
+    video.onloadedmetadata = null;
+  };
+}, [cameraOpen]);
 
   /* =====================================================
      CLEANUP
@@ -420,12 +429,20 @@ function Recognize() {
               <div className="camera-preview-wrapper">
 
                 <video
-                  ref={videoRef}
-                  className="camera-preview"
-                  autoPlay
-                  playsInline
-                  muted
-                />
+  ref={videoRef}
+  className="camera-preview"
+  autoPlay
+  playsInline
+  muted
+  style={{
+    width: "100%",
+    height: "420px",
+    display: "block",
+    objectFit: "cover",
+    background: "#050814",
+    borderRadius: "16px",
+  }}
+/>
 
 
                 <div className="camera-frame">
