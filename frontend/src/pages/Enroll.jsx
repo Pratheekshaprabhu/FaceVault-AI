@@ -360,60 +360,86 @@ useEffect(() => {
     setError("");
 
     if (!name.trim()) {
-      setError(
-        "Please enter the person's name."
-      );
+      setError("Please enter the person's name.");
       return;
     }
 
     if (!file) {
-      setError(
-        "Please select or capture a face image."
-      );
+      setError("Please select or capture a face image.");
       return;
     }
 
     const formData = new FormData();
-
-    formData.append(
-      "name",
-      name.trim()
-    );
-
-    formData.append(
-      "file",
-      file
-    );
+    formData.append("name", name.trim());
+    formData.append("file", file);
 
     try {
       setLoading(true);
 
       const response = await axios.post(
         `${API}/enroll`,
-        formData
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          timeout: 120000,
+        }
       );
 
-      if (response.data.success) {
+      if (response.data?.success) {
         setMessage(
-          `Face enrolled successfully for ${response.data.name}.`
+          `Face enrolled successfully for ${
+            response.data.name || name.trim()
+          }.`
         );
 
         setName("");
+        removeFile();
+      } else {
+        setMessage(
+          response.data?.message ||
+          `Face enrolled successfully for ${
+            response.data?.name || name.trim()
+          }.`
+        );
 
+        setName("");
         removeFile();
       }
 
     } catch (err) {
-      console.error(
-        "Enrollment error:",
-        err
-      );
+      console.error("Enrollment error:", err);
 
-      const detail =
-        err.response?.data?.detail ||
-        "Unable to enroll the face. Please try again.";
+      let errorMessage = "Unable to enroll the face. Please try again.";
 
-      setError(detail);
+      if (err.response) {
+        const detail = err.response.data?.detail;
+
+        if (typeof detail === "string" && detail.trim()) {
+          errorMessage = detail;
+        } else if (Array.isArray(detail)) {
+          errorMessage = detail
+            .map((item) => item?.msg || String(item))
+            .join(", ");
+        } else if (err.response.status === 400) {
+          errorMessage =
+            "The face could not be enrolled. Please use a clear image with one visible face.";
+        } else if (err.response.status === 404) {
+          errorMessage =
+            "Enrollment API was not found. Please refresh the page and try again.";
+        } else if (err.response.status >= 500) {
+          errorMessage =
+            "The AI server encountered an error while processing the face. Please try again.";
+        }
+      } else if (err.request) {
+        errorMessage =
+          "Could not reach the FaceVault AI server. Please check your internet connection and try again.";
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+
+      setError(errorMessage);
 
     } finally {
       setLoading(false);
