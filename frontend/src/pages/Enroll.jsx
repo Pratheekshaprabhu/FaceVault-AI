@@ -59,6 +59,41 @@ function Enroll() {
   }, []);
 
   // ==========================================
+// ATTACH CAMERA STREAM TO VIDEO
+// ==========================================
+
+useEffect(() => {
+  if (!cameraOpen) return;
+
+  const video = videoRef.current;
+  const stream = streamRef.current;
+
+  if (!video || !stream) return;
+
+  video.srcObject = stream;
+
+  const playVideo = async () => {
+    try {
+      await video.play();
+      console.log("Camera preview started successfully");
+    } catch (error) {
+      console.error("Camera preview error:", error);
+    }
+  };
+
+  video.onloadedmetadata = playVideo;
+
+  // In case metadata has already loaded
+  if (video.readyState >= 2) {
+    playVideo();
+  }
+
+  return () => {
+    video.onloadedmetadata = null;
+  };
+}, [cameraOpen]);
+
+  // ==========================================
   // SELECT IMAGE
   // ==========================================
 
@@ -528,12 +563,23 @@ function Enroll() {
               <div className="camera-preview-wrapper">
 
                 <video
-                  ref={videoRef}
-                  className="camera-preview"
-                  autoPlay
-                  playsInline
-                  muted
-                />
+  ref={videoRef}
+  autoPlay
+  playsInline
+  muted
+  width="100%"
+  height="420"
+  style={{
+    width: "100%",
+    height: "420px",
+    display: "block",
+    visibility: "visible",
+    opacity: 1,
+    objectFit: "cover",
+    backgroundColor: "#050814",
+    borderRadius: "16px",
+  }}
+/>
 
                 {/* FACE FRAME */}
 
