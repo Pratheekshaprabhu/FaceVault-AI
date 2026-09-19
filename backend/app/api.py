@@ -184,17 +184,16 @@ async def enroll(
         )
 
     except Exception as e:
-
         print("================================")
         print("ENROLLMENT BACKEND ERROR")
         print("================================")
         traceback.print_exc()
         print("================================")
-
+        
         raise HTTPException(
-            status_code=500,
-            detail="An unexpected error occurred during enrollment."
-        )
+        status_code=500,
+        detail=f"Enrollment error: {str(e)}"
+    )
 
     finally:
 
