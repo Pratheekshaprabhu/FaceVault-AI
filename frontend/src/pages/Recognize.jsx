@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 
-const API = "https://face-vault-ai-1yag.vercel.app/api/v1";
+const API = "http://127.0.0.1:8000/api/v1";
 const MATCH_THRESHOLD = 0.45;
 
 function Recognize() {
